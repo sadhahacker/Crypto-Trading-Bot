@@ -9,18 +9,20 @@ class ExecuteTradeController extends Controller
 {
     protected $tradeController;
 
-    protected $stoplossFromAccountBalance = 0.23; //23% stop loss from account balance
+    protected $stoplossFromAccountBalance; //23% stop loss from account balance
 
-    protected $takeProfitFromAccountBalance = 0.30; //30% take profit from account balance
+    protected $takeProfitFromAccountBalance; //30% take profit from account balance
 
-    protected $stoplossFromCoin = 0.03;
+    protected $stoplossFromCoin;
 
-    protected $takeProfitFromCoin = 0.023;
-
-    protected $leverage = 15;
+    protected $takeProfitFromCoin;
 
     public function __construct() {
         $this->tradeController = new TradeController();
+        $this->stoplossFromAccountBalance = config('trading.stoploss_from_account_balance');
+        $this->takeProfitFromAccountBalance = config('trading.takeprofit_from_account_balance');
+        $this->stoplossFromCoin = config('trading.stoploss_from_coin');
+        $this->takeProfitFromCoin = config('trading.takeprofit_from_coin');
     }
 
     public function executeTrade($symbol, $entry_price, $side){
@@ -29,7 +31,7 @@ class ExecuteTradeController extends Controller
             return false;
         }
 
-        $tradeLevels = $this->getTradeLevels($symbol, $this->takeProfitFromAccountBalance, $this->stoplossFromAccountBalance, $side);
+        $tradeLevels = $this->getTradeLevels($symbol,$entry_price , $this->takeProfitFromAccountBalance, $this->stoplossFromAccountBalance, $side);
 
         if (!$tradeLevels) {
             return false; // No valid trade levels
@@ -53,35 +55,53 @@ class ExecuteTradeController extends Controller
         return (empty($orders) && empty($positions));
     }
 
-    protected function getTradeLevels($symbol, $tp, $sl, $side)
+    protected function getTradeLevels($symbol, $entry_price, $tp, $sl, $side)
     {
         $ticker = $this->tradeController->getTicker($symbol);
         $current_price = isset($ticker['last']) ? $ticker['last'] : null;
 
         if (!$current_price) {
-            return null; // No price data, can't proceed
+            return null; // No price data
         }
 
-        // Entry adjustment percentage (0.1%)
+        // 0.1% distance percentage
         $distancePercentage = 0.1 / 100;
 
-        // Determine entry price
+        // Check if entry is close to current (within 0.1%)
+        $diffPercentage = abs($current_price - $entry_price) / $entry_price;
+
+        if ($diffPercentage <= $distancePercentage) {
+            if (strtolower($side) === 'buy' && $current_price < $entry_price) {
+                // Move entry slightly below current
+                $entry_price = $current_price - ($current_price * $distancePercentage);
+            } elseif (strtolower($side) === 'sell' && $current_price > $entry_price) {
+                // Move entry slightly above current
+                $entry_price = $current_price + ($current_price * $distancePercentage);
+            }
+        } else {
+            // Entry too far — recalculate from current
+            if (strtolower($side) === 'buy') {
+                $entry_price = $current_price - ($current_price * $distancePercentage);
+            } elseif (strtolower($side) === 'sell') {
+                $entry_price = $current_price + ($current_price * $distancePercentage);
+            }
+        }
+
+        // Calculate TP & SL
         if (strtolower($side) === 'buy') {
-            $entry_price = $current_price - ($current_price * $distancePercentage);
-            $takeProfit  = $entry_price + ($entry_price * $tp);
-            $stopLoss    = $entry_price - ($entry_price * $sl);
+            $takeProfit = $entry_price + ($entry_price * $tp);
+            $stopLoss   = $entry_price - ($entry_price * $sl);
         } elseif (strtolower($side) === 'sell') {
-            $entry_price = $current_price + ($current_price * $distancePercentage);
-            $takeProfit  = $entry_price - ($entry_price * $tp);
-            $stopLoss    = $entry_price + ($entry_price * $sl);
+            $takeProfit = $entry_price - ($entry_price * $tp);
+            $stopLoss   = $entry_price + ($entry_price * $sl);
         } else {
             return null;
         }
 
         return [
             'entryPrice' => $this->tradeController->priceToPrecision($symbol, $entry_price),
-            'takeProfit'  => $this->tradeController->priceToPrecision($symbol, $takeProfit),
-            'stopLoss'    => $this->tradeController->priceToPrecision($symbol, $stopLoss),
+            'takeProfit' => $this->tradeController->priceToPrecision($symbol, $takeProfit),
+            'stopLoss'   => $this->tradeController->priceToPrecision($symbol, $stopLoss),
         ];
     }
 
