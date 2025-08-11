@@ -11,23 +11,22 @@ class AccountSetupController extends Controller
 
     public function __construct()
     {
-        $exchangeClass = env('EXCHANGE_NAME');
-        // Ensure the class exists
-        if (!class_exists("\\ccxt\\$exchangeClass")) {
-            throw new \Exception("Exchange class \\ccxt\\$exchangeClass not found.");
+        $exchangeName = config('trading.exchange_name'); // e.g., "binance"
+        $fullClass = "\\ccxt\\{$exchangeName}";
+
+        if (!class_exists($fullClass)) {
+            throw new \Exception("Exchange class $fullClass not found.");
         }
 
-        $exchangeClass = "\\ccxt\\$exchangeClass";
-        $this->exchange = new $exchangeClass([
-            'apiKey' => env('EXCHANGE_API_KEY'),
-            'secret' => env('EXCHANGE_SECRET'),
-            'options' => [
-                'defaultType' => 'future', // For Binance Futures
-            ],
+        $this->exchange = new $fullClass([
+            'apiKey' => config('trading.api_key'),
+            'secret' => config('trading.api_secret'),
+            'options' => config('trading.options'),
         ]);
     }
 
-    public function getExchange(){
+    public function getExchange()
+    {
         return $this->exchange;
     }
 }

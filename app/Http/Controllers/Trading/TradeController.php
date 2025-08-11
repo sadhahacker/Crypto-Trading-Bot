@@ -12,6 +12,7 @@ class TradeController extends Controller
 
     public function __construct()
     {
+        ini_set('memory_limit', '512M');
         $this->exchange = (new AccountSetupController)->getExchange();
     }
 
@@ -157,6 +158,16 @@ class TradeController extends Controller
         if ($this->exchange->has['fetchClosedOrders']) {
             return $this->exchange->fetch_closed_orders($symbol, $since, $limit, $params);
         }
+        return null;
+    }
+
+    public function cancelAllOrders($symbol = null, $params = [])
+    {
+        // Check if exchange supports cancelAllOrders
+        if ($this->exchange->has['cancelAllOrders']) {
+            return $this->exchange->cancel_all_orders($symbol, $params);
+        }
+
         return null;
     }
 
