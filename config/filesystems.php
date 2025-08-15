@@ -59,6 +59,11 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'lorentzian_data' => [
+            'driver' => 'local',
+            'root' => app_path('Plugins/LorentzianClassification/advanced-ta/app/controller/output'),
+            'throw' => false,
+        ],
 
     ],
 

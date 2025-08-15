@@ -201,4 +201,56 @@ class ExecuteTradeController extends Controller
 
         return true;
     }
+
+    public function manualTrade($symbol, $side, $entry_price, $takeProfitPrice, $stopLossPrice, $usdtAmount, $leverage = null)
+    {
+        if ($usdtAmount <= 0 || $entry_price <= 0 || $takeProfitPrice <= 0 || $stopLossPrice <= 0) {
+            return false; // Invalid parameters
+        }
+
+        // Calculate leverage if not provided
+        if (is_null($leverage)) {
+            $leverage = $this->calculateLeverageFromStopsAndProfits();
+        }
+
+        // Set leverage on the trade controller
+        $this->tradeController->setLeverage($symbol, $leverage);
+
+        // Calculate trade amount in coins using existing logic
+        $tradeAmount = ($usdtAmount * $leverage) / $entry_price;
+        $tradeAmount = $this->tradeController->amountToPrecision($symbol, $tradeAmount);
+
+        // Use your existing order method to place orders
+        return $this->order($symbol, $side, $tradeAmount, $entry_price, $takeProfitPrice, $stopLossPrice);
+    }
+
+    public function manualTradeApi(Request $request)
+    {
+        $validated = $request->validate([
+            'symbol' => 'required|string',
+            'side' => 'required|in:buy,sell',
+            'entry_price' => 'required|numeric|min:0.00000001',
+            'take_profit' => 'required|numeric|min:0.00000001',
+            'stop_loss' => 'required|numeric|min:0.00000001',
+            'usdt_amount' => 'required|numeric|min:0.0001',
+            'leverage' => 'nullable|numeric|min:1|max:125',
+        ]);
+
+        $success = $this->manualTrade(
+            $validated['symbol'],
+            $validated['side'],
+            $validated['entry_price'],
+            $validated['take_profit'],
+            $validated['stop_loss'],
+            $validated['usdt_amount'],
+            $validated['leverage'] ?? null
+        );
+
+        if ($success) {
+            return response()->json(['status' => 'success', 'message' => 'Trade placed successfully']);
+        } else {
+            return response()->json(['status' => 'error', 'message' => 'Failed to place trade'], 400);
+        }
+    }
+
 }

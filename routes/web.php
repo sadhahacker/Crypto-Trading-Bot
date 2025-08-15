@@ -1,7 +1,13 @@
 <?php
 
+use App\Http\Controllers\Trading\ExecuteTradeController;
+use App\Http\Controllers\Trading\IndicatorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('trade');
 });
+
+Route::post('/trade/manual', [ExecuteTradeController::class, 'manualTradeApi']);
+
+Route::get('test', [IndicatorController::class, 'getData']);
