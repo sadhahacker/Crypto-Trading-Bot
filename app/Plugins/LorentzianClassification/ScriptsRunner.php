@@ -22,7 +22,7 @@ class ScriptsRunner
         'pid_filename'       => 'lorentzian.pid',
         'db_filename'        => 'results.db',
         'output_csv_filename'=> 'results.csv',
-        'venv_path'          => 'advanced-ta/.venv/Scripts/python.exe', // For Windows
+        'venv_path'          => 'advanced-ta/venv/Scripts/python.exe', // For Windows
         'script_path'        => 'advanced-ta/app/controller/lorentzian.py',
     ];
 
