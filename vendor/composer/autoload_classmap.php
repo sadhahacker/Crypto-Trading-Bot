@@ -6,10 +6,14 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'App\\Console\\Commands\\RunTrade' => $baseDir . '/app/Console/Commands/RunTrade.php',
     'App\\Http\\Controllers\\Controller' => $baseDir . '/app/Http/Controllers/Controller.php',
     'App\\Http\\Controllers\\Trading\\AccountSetupController' => $baseDir . '/app/Http/Controllers/Trading/AccountSetupController.php',
+    'App\\Http\\Controllers\\Trading\\ExecuteTradeController' => $baseDir . '/app/Http/Controllers/Trading/ExecuteTradeController.php',
+    'App\\Http\\Controllers\\Trading\\IndicatorController' => $baseDir . '/app/Http/Controllers/Trading/IndicatorController.php',
     'App\\Http\\Controllers\\Trading\\TradeController' => $baseDir . '/app/Http/Controllers/Trading/TradeController.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
+    'App\\Plugins\\LorentzianClassification\\ScriptsRunner' => $baseDir . '/app/Plugins/LorentzianClassification/ScriptsRunner.php',
     'App\\Providers\\AppServiceProvider' => $baseDir . '/app/Providers/AppServiceProvider.php',
     'Attribute' => $vendorDir . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
     'Brick\\Math\\BigDecimal' => $vendorDir . '/brick/math/src/BigDecimal.php',

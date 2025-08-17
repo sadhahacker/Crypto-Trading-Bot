@@ -7,14 +7,14 @@ use App\Models\BotConfiguration;
 use App\Plugins\LorentzianClassification\ScriptsRunner;
 use Illuminate\Console\Command;
 
-class RunTrade extends Command
+class RunLorentzian extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'run:trade';
+    protected $signature = 'run:lorentzian';
 
     /**
      * The console command description.
@@ -28,6 +28,12 @@ class RunTrade extends Command
      */
     public function handle()
     {
-        (new IndicatorController())->tradeStater();
+        $symbol = BotConfiguration::getValue('DEFAULT_SYMBOL');
+        $interval = BotConfiguration::getValue('DEFAULT_INTERVAL');
+        $limit = (int) BotConfiguration::getValue('DEFAULT_LIMIT');
+
+        (new ScriptsRunner())->run($symbol, $interval, $limit);
+
+        $this->info('Python script finished.');
     }
 }

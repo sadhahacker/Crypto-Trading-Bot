@@ -3,7 +3,6 @@
 namespace App\Plugins\LorentzianClassification;
 
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Process;
 use Illuminate\Support\Facades\Storage;
 use RuntimeException;
@@ -21,9 +20,9 @@ class ScriptsRunner
     private array $config = [
         'pid_filename'       => 'lorentzian.pid',
         'db_filename'        => 'results.db',
-        'output_csv_filename'=> 'results.csv',
-        'venv_path'          => 'advanced-ta/venv/Scripts/python.exe', // For Windows
-        'script_path'        => 'advanced-ta/app/controller/lorentzian.py',
+        'log_filename'      => 'lorentzian.log',
+        'venv_path'          => 'Plugins/LorentzianClassification/advanced-ta/venv/Scripts/python.exe',
+        'script_path'        => 'Plugins/LorentzianClassification/advanced-ta/app/controller/lorentzian.py',
     ];
 
     public function __construct()
@@ -32,91 +31,32 @@ class ScriptsRunner
     }
 
     /**
-     * Start the Python script as a background process.
+     * Run the Python script and stream output live.
      */
-    public function run(string $symbol, string $interval, int $limit): array
+    public function run(string $symbol, string $interval, int $limit): void
     {
-        if ($this->isRunning()) {
-            return [
-                'status' => 'already_running',
-                'pid'    => (int) $this->storage->get($this->config['pid_filename']),
-            ];
-        }
-
         $command = $this->buildCommand($symbol, $interval, $limit);
 
-        $process = Process::command($command)->start();
+        $process = Process::forever()
+            ->start($command, function ($type, $output) {
+                $line = trim($output);
 
-        if (!$process->running()) {
-            throw new RuntimeException("Failed to start the Lorentzian Python process.");
-        }
+                // Color based on keywords
+                if (str_contains($line, 'Error') || str_contains($line, 'Exception')) {
+                    echo "\033[31m{$line}\033[0m\n"; // Red
+                } elseif (str_contains($line, 'Received kline')) {
+                    echo "\033[33m{$line}\033[0m\n"; // Yellow
+                } elseif (str_contains($line, 'WebSocket connected')) {
+                    echo "\033[32m{$line}\033[0m\n"; // Green
+                } else {
+                    echo $line . "\n";
+                }
 
-        $pid = $process->id();
-        $this->storage->put($this->config['pid_filename'], $pid);
+                flush();
+            });
 
-        return [
-            'status'      => 'started',
-            'pid'         => $pid,
-            'db_path'     => $this->getDbPath(),
-            'output_path' => $this->getOutputPath(),
-        ];
-    }
-
-    public function stop(): array
-    {
-        $pidFilename = $this->config['pid_filename'];
-
-        if (!$this->storage->exists($pidFilename)) {
-            return ['status' => 'not_running'];
-        }
-
-        $pid = (int) $this->storage->get($pidFilename);
-
-        if ($pid > 0) {
-            $this->killProcess($pid);
-        }
-
-        $this->storage->delete($pidFilename);
-
-        return ['status' => 'stopped', 'pid' => $pid];
-    }
-
-    public function getStatus(): array
-    {
-        if ($this->isRunning()) {
-            return [
-                'status' => 'running',
-                'pid'    => (int) $this->storage->get($this->config['pid_filename']),
-            ];
-        }
-
-        return ['status' => 'stopped'];
-    }
-
-    public function isRunning(): bool
-    {
-        $pidFilename = $this->config['pid_filename'];
-
-        if (!$this->storage->exists($pidFilename)) {
-            return false;
-        }
-
-        $pid = (int) $this->storage->get($pidFilename);
-
-        if ($pid <= 0) {
-            return false;
-        }
-
-        $result = $this->isWindows()
-            ? Process::run("tasklist /FI \"PID eq {$pid}\"")
-            : Process::run("ps -p {$pid}");
-
-        if (!$result->successful()) {
-            $this->storage->delete($pidFilename);
-            return false;
-        }
-
-        return true;
+        // Wait for the process to finish
+        $process->wait();
     }
 
     public function getDbPath(): string
@@ -124,34 +64,20 @@ class ScriptsRunner
         return $this->storage->path($this->config['db_filename']);
     }
 
-    public function getOutputPath(): string
-    {
-        return $this->storage->path($this->config['output_csv_filename']);
-    }
-
     private function buildCommand(string $symbol, string $interval, int $limit): array
     {
         $pythonExecutable = $this->isWindows()
-            ? base_path($this->config['venv_path'])
+            ? app_path($this->config['venv_path'])
             : 'python3';
 
         return [
             $pythonExecutable,
-            base_path($this->config['script_path']),
+            '-u',
+            app_path($this->config['script_path']),
             $symbol,
             $interval,
-            $limit,
-            $this->getOutputPath(),
+            $this->getDbPath(),
         ];
-    }
-
-    private function killProcess(int $pid): void
-    {
-        $command = $this->isWindows()
-            ? "taskkill /F /PID {$pid}"
-            : "kill {$pid}";
-
-        Process::run($command);
     }
 
     private function isWindows(): bool

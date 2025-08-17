@@ -10,4 +10,5 @@ Route::get('/', function () {
 
 Route::post('/trade/manual', [ExecuteTradeController::class, 'manualTradeApi']);
 
-Route::get('test', [IndicatorController::class, 'getData']);
+Route::get('start', [IndicatorController::class, 'start']);
+Route::get('stop', [IndicatorController::class, 'stop']);

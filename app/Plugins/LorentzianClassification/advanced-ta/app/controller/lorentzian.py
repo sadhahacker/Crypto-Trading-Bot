@@ -81,7 +81,7 @@ class LorentzianWebSocketUpdater:
 
             # Check if table exists
             cursor.execute("""
-                SELECT name FROM sqlite_master 
+                SELECT name FROM sqlite_master
                 WHERE type='table' AND name=?
             """, (self.table_name,))
             table_exists = cursor.fetchone()
@@ -94,8 +94,8 @@ class LorentzianWebSocketUpdater:
                 if count >= self.min_historical_bars:
                     print(f"Found {count} existing records in database.")
                     df = pd.read_sql(
-                        f"""SELECT * FROM {self.table_name} 
-                            ORDER BY timestamp DESC 
+                        f"""SELECT * FROM {self.table_name}
+                            ORDER BY timestamp DESC
                             LIMIT {self.min_historical_bars}""",
                         conn,
                         parse_dates=['timestamp'],

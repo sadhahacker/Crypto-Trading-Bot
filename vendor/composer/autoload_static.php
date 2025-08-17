@@ -601,10 +601,14 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
     );
 
     public static $classMap = array (
+        'App\\Console\\Commands\\RunTrade' => __DIR__ . '/../..' . '/app/Console/Commands/RunTrade.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\Trading\\AccountSetupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/AccountSetupController.php',
+        'App\\Http\\Controllers\\Trading\\ExecuteTradeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/ExecuteTradeController.php',
+        'App\\Http\\Controllers\\Trading\\IndicatorController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/IndicatorController.php',
         'App\\Http\\Controllers\\Trading\\TradeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/TradeController.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
+        'App\\Plugins\\LorentzianClassification\\ScriptsRunner' => __DIR__ . '/../..' . '/app/Plugins/LorentzianClassification/ScriptsRunner.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',
         'Attribute' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/Attribute.php',
         'Brick\\Math\\BigDecimal' => __DIR__ . '/..' . '/brick/math/src/BigDecimal.php',
