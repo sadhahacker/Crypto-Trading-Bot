@@ -22,7 +22,7 @@ class ScriptsRunner
         'db_filename'        => 'results.db',
         'log_filename'      => 'lorentzian.log',
         'venv_path'          => 'Plugins/LorentzianClassification/advanced-ta/venv/Scripts/python.exe',
-        'lenv_path'          => 'Plugins/LorentzianClassification/advanced-ta/lenv/bin/activate',
+        'lenv_path'           => 'Plugins/LorentzianClassification/advanced-ta/venv/bin/python',
         'script_path'        => 'Plugins/LorentzianClassification/advanced-ta/app/controller/lorentzian.py',
     ];
 
