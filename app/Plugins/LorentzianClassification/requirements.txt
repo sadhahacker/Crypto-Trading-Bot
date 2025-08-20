@@ -1,4 +1,5 @@
 -e git+https://bitbucket.org/lokiarya/advanced-ta.git@d310fdf3bf5dc99c815f1b12b8683f1841ff9cda#egg=advanced_ta
+async-timeout==5.0.1
 certifi==2025.1.31
 charset-normalizer==3.4.1
 colorama==0.4.6
@@ -24,6 +25,7 @@ pytest-profiling==1.8.1
 python-dateutil==2.9.0.post0
 python-dotenv==1.1.0
 pytz==2025.2
+redis==6.4.0
 requests==2.32.3
 scikit-learn==1.6.1
 scipy==1.15.2
@@ -34,3 +36,4 @@ tomli==2.2.1
 tzdata==2025.2
 urllib3==2.3.0
 websocket-client==1.8.0
+websockets==15.0.1
