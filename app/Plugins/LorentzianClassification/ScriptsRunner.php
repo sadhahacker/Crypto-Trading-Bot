@@ -22,6 +22,7 @@ class ScriptsRunner
         'db_filename'        => 'results.db',
         'log_filename'      => 'lorentzian.log',
         'venv_path'          => 'Plugins/LorentzianClassification/advanced-ta/venv/Scripts/python.exe',
+        'lenv_path'          => 'Plugins/LorentzianClassification/advanced-ta/lenv/bin/activate',
         'script_path'        => 'Plugins/LorentzianClassification/advanced-ta/app/controller/lorentzian.py',
     ];
 
@@ -68,7 +69,7 @@ class ScriptsRunner
     {
         $pythonExecutable = $this->isWindows()
             ? app_path($this->config['venv_path'])
-            : 'python3';
+            :  app_path($this->config['lenv_path']);
 
         return [
             $pythonExecutable,
