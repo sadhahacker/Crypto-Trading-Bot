@@ -5,7 +5,7 @@ use App\Http\Controllers\Trading\IndicatorController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
-    return view('trade');
+    return view('welcome');
 });
 
 Route::post('/trade/manual', [ExecuteTradeController::class, 'manualTradeApi']);
