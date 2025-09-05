@@ -17,6 +17,90 @@ class TradeController extends Controller
     }
 
     /**
+     * Get account details including balance, positions, and performance metrics
+     */
+    public function getAccountDetails()
+    {
+        try {
+            $balance = $this->getBalance();
+            $positions = $this->getPositions('BNBUSDT');
+
+            // Calculate total balance in USDT
+            $totalBalance = 0;
+            $assets = [];
+
+            if (isset($balance['total'])) {
+                foreach ($balance['total'] as $currency => $amount) {
+                    if ($amount > 0) {
+                        // For simplicity, we're assuming all values are in USDT
+                        // In a real implementation, you would convert based on current prices
+                        $assets[] = [
+                            'currency' => $currency,
+                            'amount' => $amount,
+                            'value' => $currency === 'USDT' ? $amount : 0 // Simplified
+                        ];
+
+                        if ($currency === 'USDT') {
+                            $totalBalance += $amount;
+                        }
+                    }
+                }
+            }
+
+            // Process positions data
+            $activePositions = [];
+            if ($positions) {
+                foreach ($positions as $position) {
+                    if (isset($position['contracts']) && $position['contracts'] > 0) {
+                        $activePositions[] = [
+                            'symbol' => $position['symbol'] ?? '',
+                            'side' => $position['side'] ?? '',
+                            'contracts' => $position['contracts'] ?? 0,
+                            'entryPrice' => $position['entryPrice'] ?? 0,
+                            'markPrice' => $position['markPrice'] ?? 0,
+                            'unrealizedPnl' => $position['unrealizedPnl'] ?? 0,
+                            'percentage' => $position['percentage'] ?? 0,
+                        ];
+                    }
+                }
+            }
+
+            // Extract performance data from balance info
+            $performance = [
+                'today' => 0,
+                'week' => 0,
+                'month' => 0,
+            ];
+
+            // If we have balance info, use it
+            if (isset($balance['info'])) {
+                $info = $balance['info'];
+                if (isset($info['totalUnrealizedProfit'])) {
+                    $performance['today'] = (float)$info['totalUnrealizedProfit'];
+                }
+            }
+
+            return response()->json([
+                'success' => true,
+                'data' => [
+                    'balance' => [
+                        'total' => $totalBalance,
+                        'assets' => $assets
+                    ],
+                    'positions' => $activePositions,
+                    'performance' => $performance,
+                    'raw_balance' => $balance // Include raw data for debugging
+                ]
+            ]);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Failed to fetch account details: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
      * Get markets available on the exchange
      */
     public function getMarkets($params = [])
@@ -169,6 +253,15 @@ class TradeController extends Controller
         }
 
         return null;
+    }
+
+    public function getCoins()
+    {
+        $cacheKey = 'ccxt_markets_' . $this->exchange->id;
+        return \Cache::remember($cacheKey, now()->addDay(), function () {
+            $markets = $this->exchange->load_markets();
+            return array_keys($markets);
+        });
     }
 
     /**

@@ -30,8 +30,8 @@ return [
     | EXCHANGE_SECRET=your_api_secret_here
     |
     */
-    'api_key' => env('EXCHANGE_API_KEY', ''),
-    'api_secret' => env('EXCHANGE_SECRET', ''),
+    'api_key' => env('EXCHANGE_API_KEY', 'uZSrTKZnWYLwvGBixlZfyfaf9ioTSA9KdUZ3pDl30C8eqta4KELNV1yCPY8Xgcsx'),
+    'api_secret' => env('EXCHANGE_SECRET', '22vfYdgKN7QiyiswGbc1vOcZLwWBas3WdRo2VgGbcKS1FdXtRWpdxN2HzmpbgPh7'),
 
     /*
     |--------------------------------------------------------------------------

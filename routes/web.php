@@ -4,11 +4,6 @@ use App\Http\Controllers\Trading\ExecuteTradeController;
 use App\Http\Controllers\Trading\IndicatorController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
-
-Route::post('/trade/manual', [ExecuteTradeController::class, 'manualTradeApi']);
-
-Route::get('start', [IndicatorController::class, 'start']);
-Route::get('stop', [IndicatorController::class, 'stop']);
+Route::get('/{any}', function () {
+    return view('welcome'); // Your React entry blade
+})->where('any', '.*');
