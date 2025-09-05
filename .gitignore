@@ -50,10 +50,19 @@ logs/
 /public/js/
 /public/mix-manifest.json
 
-# Testing
-/coverage/
-.phpunit.cache/
-
-# Backup files
-*.bak
-*.backup
+# Python specific ignores
+app/Plugins/**/venv/
+app/Plugins/**/env/
+app/Plugins/**/ENV/
+app/Plugins/**/.venv/
+app/Plugins/**/.env/
+app/Plugins/**/env.bak/
+app/Plugins/**/venv.bak/
+app/Plugins/**/*.pyc
+app/Plugins/**/__pycache__/
+app/Plugins/**/.pytest_cache/
+app/Plugins/**/poetry.lock
+app/Plugins/**/dist/
+app/Plugins/**/build/
+app/Plugins/**/*.egg-info/
+app/Plugins/**/.mypy_cache/
