@@ -45,6 +45,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
         'ec07570ca5a812141189b1fa81503674' => __DIR__ . '/..' . '/phpunit/phpunit/src/Framework/Assert/Functions.php',
+        '6d394c3a532652dafb4dd296ba6a3f0b' => __DIR__ . '/../..' . '/app/Http/helpers.php',
         'b877f368d1c2562a7cf2e284869de1f9' => __DIR__ . '/..' . '/ccxt/ccxt/ccxt.php',
     );
 
@@ -63,6 +64,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         array (
             'Whoops\\' => 7,
             'Webmozart\\Assert\\' => 17,
+            'WebSocket\\' => 10,
         ),
         'T' => 
         array (
@@ -125,6 +127,10 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
             'Psr\\EventDispatcher\\' => 20,
             'Psr\\Container\\' => 14,
             'Psr\\Clock\\' => 10,
+            'Phrity\\Util\\' => 12,
+            'Phrity\\Net\\' => 11,
+            'Phrity\\Http\\' => 12,
+            'Phrity\\Comparison\\' => 18,
             'PhpParser\\' => 10,
             'PhpOption\\' => 10,
         ),
@@ -227,6 +233,10 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'WebSocket\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phrity/websocket/src',
         ),
         'TijsVerkoyen\\CssToInlineStyles\\' => 
         array (
@@ -429,6 +439,23 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         array (
             0 => __DIR__ . '/..' . '/psr/clock/src',
         ),
+        'Phrity\\Util\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phrity/util-errorhandler/src',
+        ),
+        'Phrity\\Net\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phrity/net-uri/src',
+            1 => __DIR__ . '/..' . '/phrity/net-stream/src',
+        ),
+        'Phrity\\Http\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phrity/http/src',
+        ),
+        'Phrity\\Comparison\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/phrity/comparison/src',
+        ),
         'PhpParser\\' => 
         array (
             0 => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser',
@@ -608,6 +635,8 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
     public static $classMap = array (
         'App\\Console\\Commands\\RunLorentzian' => __DIR__ . '/../..' . '/app/Console/Commands/RunLorentzian.php',
         'App\\Console\\Commands\\RunTrade' => __DIR__ . '/../..' . '/app/Console/Commands/RunTrade.php',
+        'App\\Http\\Controllers\\Admin\\BotsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BotsController.php',
+        'App\\Http\\Controllers\\Admin\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardController.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
         'App\\Http\\Controllers\\Trading\\AccountSetupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/AccountSetupController.php',
         'App\\Http\\Controllers\\Trading\\ExecuteTradeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/ExecuteTradeController.php',
@@ -5137,6 +5166,23 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'PhpParser\\PrettyPrinter\\Standard' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/PrettyPrinter/Standard.php',
         'PhpParser\\Token' => __DIR__ . '/..' . '/nikic/php-parser/lib/PhpParser/Token.php',
         'PhpToken' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/PhpToken.php',
+        'Phrity\\Comparison\\Comparable' => __DIR__ . '/..' . '/phrity/comparison/src/Comparable.php',
+        'Phrity\\Comparison\\Comparator' => __DIR__ . '/..' . '/phrity/comparison/src/Comparator.php',
+        'Phrity\\Comparison\\ComparisonTrait' => __DIR__ . '/..' . '/phrity/comparison/src/ComparisonTrait.php',
+        'Phrity\\Comparison\\Equalable' => __DIR__ . '/..' . '/phrity/comparison/src/Equalable.php',
+        'Phrity\\Comparison\\IncomparableException' => __DIR__ . '/..' . '/phrity/comparison/src/IncomparableException.php',
+        'Phrity\\Http\\HttpFactory' => __DIR__ . '/..' . '/phrity/http/src/HttpFactory.php',
+        'Phrity\\Net\\Context' => __DIR__ . '/..' . '/phrity/net-stream/src/Context.php',
+        'Phrity\\Net\\SocketClient' => __DIR__ . '/..' . '/phrity/net-stream/src/SocketClient.php',
+        'Phrity\\Net\\SocketServer' => __DIR__ . '/..' . '/phrity/net-stream/src/SocketServer.php',
+        'Phrity\\Net\\SocketStream' => __DIR__ . '/..' . '/phrity/net-stream/src/SocketStream.php',
+        'Phrity\\Net\\Stream' => __DIR__ . '/..' . '/phrity/net-stream/src/Stream.php',
+        'Phrity\\Net\\StreamCollection' => __DIR__ . '/..' . '/phrity/net-stream/src/StreamCollection.php',
+        'Phrity\\Net\\StreamException' => __DIR__ . '/..' . '/phrity/net-stream/src/StreamException.php',
+        'Phrity\\Net\\StreamFactory' => __DIR__ . '/..' . '/phrity/net-stream/src/StreamFactory.php',
+        'Phrity\\Net\\Uri' => __DIR__ . '/..' . '/phrity/net-uri/src/Uri.php',
+        'Phrity\\Net\\UriFactory' => __DIR__ . '/..' . '/phrity/net-uri/src/UriFactory.php',
+        'Phrity\\Util\\ErrorHandler' => __DIR__ . '/..' . '/phrity/util-errorhandler/src/ErrorHandler.php',
         'Psr\\Clock\\ClockInterface' => __DIR__ . '/..' . '/psr/clock/src/ClockInterface.php',
         'Psr\\Container\\ContainerExceptionInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerExceptionInterface.php',
         'Psr\\Container\\ContainerInterface' => __DIR__ . '/..' . '/psr/container/src/ContainerInterface.php',
@@ -6896,6 +6942,63 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'TijsVerkoyen\\CssToInlineStyles\\Css\\Rule\\Rule' => __DIR__ . '/..' . '/tijsverkoyen/css-to-inline-styles/src/Css/Rule/Rule.php',
         'UnhandledMatchError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/UnhandledMatchError.php',
         'ValueError' => __DIR__ . '/..' . '/symfony/polyfill-php80/Resources/stubs/ValueError.php',
+        'WebSocket\\Client' => __DIR__ . '/..' . '/phrity/websocket/src/Client.php',
+        'WebSocket\\Connection' => __DIR__ . '/..' . '/phrity/websocket/src/Connection.php',
+        'WebSocket\\Constant' => __DIR__ . '/..' . '/phrity/websocket/src/Constant.php',
+        'WebSocket\\Exception\\BadOpcodeException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/BadOpcodeException.php',
+        'WebSocket\\Exception\\BadUriException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/BadUriException.php',
+        'WebSocket\\Exception\\ClientException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ClientException.php',
+        'WebSocket\\Exception\\CloseException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/CloseException.php',
+        'WebSocket\\Exception\\ConnectionClosedException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ConnectionClosedException.php',
+        'WebSocket\\Exception\\ConnectionFailureException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ConnectionFailureException.php',
+        'WebSocket\\Exception\\ConnectionLevelInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ConnectionLevelInterface.php',
+        'WebSocket\\Exception\\ConnectionTimeoutException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ConnectionTimeoutException.php',
+        'WebSocket\\Exception\\Exception' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/Exception.php',
+        'WebSocket\\Exception\\ExceptionInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ExceptionInterface.php',
+        'WebSocket\\Exception\\HandshakeException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/HandshakeException.php',
+        'WebSocket\\Exception\\MessageLevelInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/MessageLevelInterface.php',
+        'WebSocket\\Exception\\ReconnectException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ReconnectException.php',
+        'WebSocket\\Exception\\ServerException' => __DIR__ . '/..' . '/phrity/websocket/src/Exception/ServerException.php',
+        'WebSocket\\Frame\\Frame' => __DIR__ . '/..' . '/phrity/websocket/src/Frame/Frame.php',
+        'WebSocket\\Frame\\FrameHandler' => __DIR__ . '/..' . '/phrity/websocket/src/Frame/FrameHandler.php',
+        'WebSocket\\Http\\DefaultHttpFactory' => __DIR__ . '/..' . '/phrity/websocket/src/Http/DefaultHttpFactory.php',
+        'WebSocket\\Http\\HttpHandler' => __DIR__ . '/..' . '/phrity/websocket/src/Http/HttpHandler.php',
+        'WebSocket\\Http\\Message' => __DIR__ . '/..' . '/phrity/websocket/src/Http/Message.php',
+        'WebSocket\\Http\\Request' => __DIR__ . '/..' . '/phrity/websocket/src/Http/Request.php',
+        'WebSocket\\Http\\Response' => __DIR__ . '/..' . '/phrity/websocket/src/Http/Response.php',
+        'WebSocket\\Http\\ServerRequest' => __DIR__ . '/..' . '/phrity/websocket/src/Http/ServerRequest.php',
+        'WebSocket\\Message\\Binary' => __DIR__ . '/..' . '/phrity/websocket/src/Message/Binary.php',
+        'WebSocket\\Message\\Close' => __DIR__ . '/..' . '/phrity/websocket/src/Message/Close.php',
+        'WebSocket\\Message\\Message' => __DIR__ . '/..' . '/phrity/websocket/src/Message/Message.php',
+        'WebSocket\\Message\\MessageHandler' => __DIR__ . '/..' . '/phrity/websocket/src/Message/MessageHandler.php',
+        'WebSocket\\Message\\Ping' => __DIR__ . '/..' . '/phrity/websocket/src/Message/Ping.php',
+        'WebSocket\\Message\\Pong' => __DIR__ . '/..' . '/phrity/websocket/src/Message/Pong.php',
+        'WebSocket\\Message\\Text' => __DIR__ . '/..' . '/phrity/websocket/src/Message/Text.php',
+        'WebSocket\\Middleware\\Callback' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/Callback.php',
+        'WebSocket\\Middleware\\CloseHandler' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/CloseHandler.php',
+        'WebSocket\\Middleware\\CompressionExtension' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/CompressionExtension.php',
+        'WebSocket\\Middleware\\CompressionExtension\\CompressorInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/CompressionExtension/CompressorInterface.php',
+        'WebSocket\\Middleware\\CompressionExtension\\DeflateCompressor' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/CompressionExtension/DeflateCompressor.php',
+        'WebSocket\\Middleware\\FollowRedirect' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/FollowRedirect.php',
+        'WebSocket\\Middleware\\MiddlewareHandler' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/MiddlewareHandler.php',
+        'WebSocket\\Middleware\\MiddlewareInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/MiddlewareInterface.php',
+        'WebSocket\\Middleware\\PingInterval' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/PingInterval.php',
+        'WebSocket\\Middleware\\PingResponder' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/PingResponder.php',
+        'WebSocket\\Middleware\\ProcessHttpIncomingInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessHttpIncomingInterface.php',
+        'WebSocket\\Middleware\\ProcessHttpOutgoingInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessHttpOutgoingInterface.php',
+        'WebSocket\\Middleware\\ProcessHttpStack' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessHttpStack.php',
+        'WebSocket\\Middleware\\ProcessIncomingInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessIncomingInterface.php',
+        'WebSocket\\Middleware\\ProcessOutgoingInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessOutgoingInterface.php',
+        'WebSocket\\Middleware\\ProcessStack' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessStack.php',
+        'WebSocket\\Middleware\\ProcessTickInterface' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessTickInterface.php',
+        'WebSocket\\Middleware\\ProcessTickStack' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/ProcessTickStack.php',
+        'WebSocket\\Middleware\\SubprotocolNegotiation' => __DIR__ . '/..' . '/phrity/websocket/src/Middleware/SubprotocolNegotiation.php',
+        'WebSocket\\Server' => __DIR__ . '/..' . '/phrity/websocket/src/Server.php',
+        'WebSocket\\Trait\\ListenerTrait' => __DIR__ . '/..' . '/phrity/websocket/src/Trait/ListenerTrait.php',
+        'WebSocket\\Trait\\LoggerAwareTrait' => __DIR__ . '/..' . '/phrity/websocket/src/Trait/LoggerAwareTrait.php',
+        'WebSocket\\Trait\\OpcodeTrait' => __DIR__ . '/..' . '/phrity/websocket/src/Trait/OpcodeTrait.php',
+        'WebSocket\\Trait\\SendMethodsTrait' => __DIR__ . '/..' . '/phrity/websocket/src/Trait/SendMethodsTrait.php',
+        'WebSocket\\Trait\\StringableTrait' => __DIR__ . '/..' . '/phrity/websocket/src/Trait/StringableTrait.php',
         'Webmozart\\Assert\\Assert' => __DIR__ . '/..' . '/webmozart/assert/src/Assert.php',
         'Webmozart\\Assert\\InvalidArgumentException' => __DIR__ . '/..' . '/webmozart/assert/src/InvalidArgumentException.php',
         'Webmozart\\Assert\\Mixin' => __DIR__ . '/..' . '/webmozart/assert/src/Mixin.php',

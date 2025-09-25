@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Trading;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Exception;
+use Illuminate\Support\Arr;
 
 class TradeController extends Controller
 {
@@ -23,80 +24,33 @@ class TradeController extends Controller
     {
         try {
             $balance = $this->getBalance();
-            $positions = $this->getPositions('BNBUSDT');
 
-            // Calculate total balance in USDT
-            $totalBalance = 0;
-            $assets = [];
+            // Extract total balances
+            $totalWalletBalance = Arr::get($balance, 'info.totalWalletBalance', '0.00000000');
+            $availableBalance = Arr::get($balance, 'info.availableBalance', '0.00000000');
 
-            if (isset($balance['total'])) {
-                foreach ($balance['total'] as $currency => $amount) {
-                    if ($amount > 0) {
-                        // For simplicity, we're assuming all values are in USDT
-                        // In a real implementation, you would convert based on current prices
-                        $assets[] = [
-                            'currency' => $currency,
-                            'amount' => $amount,
-                            'value' => $currency === 'USDT' ? $amount : 0 // Simplified
-                        ];
+            // Extract assets with walletBalance and availableBalance only
+            $assets = collect(Arr::get($balance, 'info.assets', []))
+                ->map(function ($asset) {
+                    return [
+                        'asset' => $asset['asset'] ?? '',
+                        'walletBalance' => $asset['walletBalance'] ?? '0.00000000',
+                        'availableBalance' => $asset['availableBalance'] ?? '0.00000000',
+                    ];
+                })
+                ->values();
 
-                        if ($currency === 'USDT') {
-                            $totalBalance += $amount;
-                        }
-                    }
-                }
-            }
+            // Extract positions safely
+            $positions = Arr::get($balance, 'info.positions', []);
 
-            // Process positions data
-            $activePositions = [];
-            if ($positions) {
-                foreach ($positions as $position) {
-                    if (isset($position['contracts']) && $position['contracts'] > 0) {
-                        $activePositions[] = [
-                            'symbol' => $position['symbol'] ?? '',
-                            'side' => $position['side'] ?? '',
-                            'contracts' => $position['contracts'] ?? 0,
-                            'entryPrice' => $position['entryPrice'] ?? 0,
-                            'markPrice' => $position['markPrice'] ?? 0,
-                            'unrealizedPnl' => $position['unrealizedPnl'] ?? 0,
-                            'percentage' => $position['percentage'] ?? 0,
-                        ];
-                    }
-                }
-            }
-
-            // Extract performance data from balance info
-            $performance = [
-                'today' => 0,
-                'week' => 0,
-                'month' => 0,
-            ];
-
-            // If we have balance info, use it
-            if (isset($balance['info'])) {
-                $info = $balance['info'];
-                if (isset($info['totalUnrealizedProfit'])) {
-                    $performance['today'] = (float)$info['totalUnrealizedProfit'];
-                }
-            }
-
-            return response()->json([
-                'success' => true,
-                'data' => [
-                    'balance' => [
-                        'total' => $totalBalance,
-                        'assets' => $assets
-                    ],
-                    'positions' => $activePositions,
-                    'performance' => $performance,
-                    'raw_balance' => $balance // Include raw data for debugging
-                ]
+            return successResponse('Account details fetched successfully', [
+                'totalWalletBalance' => $totalWalletBalance,
+                'availableBalance' => $availableBalance,
+                'assets' => $assets,
+                'positions' => $positions,
             ]);
         } catch (Exception $e) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Failed to fetch account details: ' . $e->getMessage()
-            ], 500);
+            return errorResponse($e->getMessage());
         }
     }
 
@@ -150,10 +104,10 @@ class TradeController extends Controller
     }
 
 
-    public function getPositions($symbol = null, $params = [])
+    public function getPositions($symbol = [], $params = [])
     {
         if ($this->exchange->has['fetchPositions']) {
-            return $this->exchange->fetch_positions([$symbol], $params);
+            return $this->exchange->fetch_positions($symbol, $params);
         }
         return null;
     }

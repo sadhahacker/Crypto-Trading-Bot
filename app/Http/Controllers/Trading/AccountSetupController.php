@@ -21,6 +21,7 @@ class AccountSetupController extends Controller
         $this->exchange = new $fullClass([
             'apiKey' => config('trading.api_key'),
             'secret' => config('trading.api_secret'),
+            'enableRateLimit' => true,
             'options' => config('trading.options'),
         ]);
     }
