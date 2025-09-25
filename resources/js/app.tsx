@@ -10,7 +10,7 @@ axios.defaults.baseURL = import.meta.env.VITE_APP_URL
 
 function App() {
     return (
-        <BrowserRouter basename="/bot/public">
+        <BrowserRouter basename="/">
             <Routes>
                 <Route element={<MainLayout />}>
                     <Route index element={<Dashboard />} />
