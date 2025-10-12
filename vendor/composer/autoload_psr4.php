@@ -73,6 +73,8 @@ return array(
     'Nette\\' => array($vendorDir . '/nette/utils/src'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'Mockery\\' => array($vendorDir . '/mockery/mockery/library/Mockery'),
+    'LupeCode\\phpTraderNative\\' => array($vendorDir . '/lupecode/php-trader-native/source'),
+    'LupeCode\\phpTraderNativeTest\\' => array($vendorDir . '/lupecode/php-trader-native/tests'),
     'League\\Uri\\' => array($vendorDir . '/league/uri', $vendorDir . '/league/uri-interfaces'),
     'League\\MimeTypeDetection\\' => array($vendorDir . '/league/mime-type-detection/src'),
     'League\\Flysystem\\Local\\' => array($vendorDir . '/league/flysystem-local'),

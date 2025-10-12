@@ -2,41 +2,30 @@
 
 namespace App\Http\Controllers\Trading;
 
+use App\Http\Controllers\Common\DataFrame;
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Strategies\EmaRsiVolumeStrategy;
 use App\Models\BotConfiguration;
 use App\Plugins\LorentzianClassification\ScriptsRunner;
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 
 class IndicatorController extends Controller{
 
     public function tradeStater()
     {
         $symbol = BotConfiguration::getValue('DEFAULT_SYMBOL');
-        $threshold = BotConfiguration::getValue('PREDICTION_THRESHOLD');
-        $latest = (new ScriptsRunner())->lorentzianTable()
-            ->orderBy('timestamp', 'desc')
-            ->first();
 
-        if (!$latest) return;
+        $candles = (new TradeController())->getOHLCV($symbol, '1h');
+        $signal = (new EmaRsiVolumeStrategy())->checkForSignal((new DataFrame($candles)));
 
-        $last = \Cache::get('last_lorentzian_timestamp');
-
-        if (!$last || $latest->timestamp != $last) {
-
-            $signal = $this->lorentzianUpdated($latest, $threshold);
-
-            if ($signal['status'] !== 'no_signal') {
-
-                (new ExecuteTradeController())->executeTrade(
-                    $symbol,
-                    $signal['entry'],
-                    $signal['status']
-                );
-
-                \Cache::put('last_lorentzian_timestamp', $latest->timestamp);
-            }
+        if(is_null($signal)){
+            return;
         }
+
+        (new ExecuteTradeController())->executeTrade(
+            $symbol,
+            $signal['entry'],
+            strtolower($signal['signal'])
+        );
     }
 
     public function lorentzianUpdated($data, $predictionThreshold = 6)

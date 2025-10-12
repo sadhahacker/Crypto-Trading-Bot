@@ -24,6 +24,10 @@ class AccountSetupController extends Controller
             'enableRateLimit' => true,
             'options' => config('trading.options'),
         ]);
+
+        if (method_exists($this->exchange, 'load_time_difference')) {
+            $this->exchange->load_time_difference(); // Sync local time with Binance server
+        }
     }
 
     public function getExchange()

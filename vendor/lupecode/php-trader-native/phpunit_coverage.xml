@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<phpunit
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/10.3/phpunit.xsd"
+        bootstrap="vendor/autoload.php"
+        processIsolation="false"
+        cacheDirectory=".phpunit.cache"
+>
+  <coverage includeUncoveredFiles="true">
+    <report>
+      <clover outputFile="./test-results/coverage.xml"/>
+      <html outputDirectory="./test-results/coverage-report"/>
+      <text outputFile="php://stdout"/>
+    </report>
+  </coverage>
+    <testsuites>
+        <testsuite name="all">
+            <directory>tests</directory>
+      <exclude>tests/benchmark</exclude>
+        </testsuite>
+    </testsuites>
+    <groups>
+        <exclude>
+            <group>exceptions</group>
+            <!-- The exceptions group are tests that do not work properly with xDebug enabled. -->
+        </exclude>
+    </groups>
+  <logging/>
+  <source>
+    <include>
+      <directory suffix=".php">./source</directory>
+    </include>
+    <exclude>
+      <directory>./vendor</directory>
+    </exclude>
+  </source>
+</phpunit>

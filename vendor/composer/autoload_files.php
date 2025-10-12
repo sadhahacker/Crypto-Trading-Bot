@@ -40,6 +40,7 @@ return array(
     '493c6aea52f6009bab023b26c21a386a' => $vendorDir . '/laravel/framework/src/Illuminate/Support/functions.php',
     '58571171fd5812e6e447dce228f52f4d' => $vendorDir . '/laravel/framework/src/Illuminate/Support/helpers.php',
     '062a54fe8f6f91078b197f2922521dd9' => $vendorDir . '/laravel/pint/overrides/Runner/Parallel/ProcessFactory.php',
+    '84520262c35d4be794861fe90a86a158' => $vendorDir . '/lupecode/php-trader-native/source/polyfill.php',
     'c72349b1fe8d0deeedd3a52e8aa814d8' => $vendorDir . '/mockery/mockery/library/helpers.php',
     'ce9671a430e4846b44e1c68c7611f9f5' => $vendorDir . '/mockery/mockery/library/Mockery.php',
     'a1cfe24d14977df6878b9bf804af2d1c' => $vendorDir . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',

@@ -1,0 +1,37 @@
+{
+  "name": "lupecode/php-trader-native",
+  "description": "An native version of the PHP Trader extension.",
+  "type": "library",
+  "license": "GPL-3.0-or-later",
+  "authors":[
+    {
+      "name": "Joshua Lopez",
+      "email": "joshua@lupecode.com",
+      "homepage": "https://github.com/jb-lopez",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": ">=8.2.0"
+  },
+  "require-dev": {
+    "ext-ds": "*",
+    "ext-trader": ">=0.4.1",
+    "phpbench/phpbench": "~1.2.14",
+    "phpunit/phpunit": "~10.3.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "LupeCode\\phpTraderNative\\": "source/",
+      "LupeCode\\phpTraderNativeTest\\": "tests/"
+    },
+    "files": [
+      "source/polyfill.php"
+    ]
+  },
+  "scripts": {
+    "test": "phpunit"
+  }
+}

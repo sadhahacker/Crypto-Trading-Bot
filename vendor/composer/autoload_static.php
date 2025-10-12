@@ -41,6 +41,7 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         '493c6aea52f6009bab023b26c21a386a' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/functions.php',
         '58571171fd5812e6e447dce228f52f4d' => __DIR__ . '/..' . '/laravel/framework/src/Illuminate/Support/helpers.php',
         '062a54fe8f6f91078b197f2922521dd9' => __DIR__ . '/..' . '/laravel/pint/overrides/Runner/Parallel/ProcessFactory.php',
+        '84520262c35d4be794861fe90a86a158' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/polyfill.php',
         'c72349b1fe8d0deeedd3a52e8aa814d8' => __DIR__ . '/..' . '/mockery/mockery/library/helpers.php',
         'ce9671a430e4846b44e1c68c7611f9f5' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery.php',
         'a1cfe24d14977df6878b9bf804af2d1c' => __DIR__ . '/..' . '/nunomaduro/collision/src/Adapters/Phpunit/Autoload.php',
@@ -146,6 +147,8 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         ),
         'L' => 
         array (
+            'LupeCode\\phpTraderNative\\' => 25,
+            'LupeCode\\phpTraderNativeTest\\' => 29,
             'League\\Uri\\' => 11,
             'League\\MimeTypeDetection\\' => 25,
             'League\\Flysystem\\Local\\' => 23,
@@ -479,6 +482,14 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'Mockery\\' => 
         array (
             0 => __DIR__ . '/..' . '/mockery/mockery/library/Mockery',
+        ),
+        'LupeCode\\phpTraderNative\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lupecode/php-trader-native/source',
+        ),
+        'LupeCode\\phpTraderNativeTest\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/lupecode/php-trader-native/tests',
         ),
         'League\\Uri\\' => 
         array (
@@ -3573,6 +3584,36 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         'League\\Uri\\UriTemplate\\TemplateCanNotBeExpanded' => __DIR__ . '/..' . '/league/uri/UriTemplate/TemplateCanNotBeExpanded.php',
         'League\\Uri\\UriTemplate\\VarSpecifier' => __DIR__ . '/..' . '/league/uri/UriTemplate/VarSpecifier.php',
         'League\\Uri\\UriTemplate\\VariableBag' => __DIR__ . '/..' . '/league/uri/UriTemplate/VariableBag.php',
+        'LupeCode\\phpTraderNativeTest\\LupeTraderFriendlyTest' => __DIR__ . '/..' . '/lupecode/php-trader-native/tests/LupeTraderFriendlyTest.php',
+        'LupeCode\\phpTraderNativeTest\\LupeTraderTest' => __DIR__ . '/..' . '/lupecode/php-trader-native/tests/LupeTraderTest.php',
+        'LupeCode\\phpTraderNativeTest\\TestingTrait' => __DIR__ . '/..' . '/lupecode/php-trader-native/tests/TestingTrait.php',
+        'LupeCode\\phpTraderNativeTest\\TraderFriendlyTest' => __DIR__ . '/..' . '/lupecode/php-trader-native/tests/TraderFriendlyTest.php',
+        'LupeCode\\phpTraderNativeTest\\TraderTest' => __DIR__ . '/..' . '/lupecode/php-trader-native/tests/TraderTest.php',
+        'LupeCode\\phpTraderNative\\LupeTrader' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/LupeTrader.php',
+        'LupeCode\\phpTraderNative\\LupeTraderFriendly' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/LupeTraderFriendly.php',
+        'LupeCode\\phpTraderNative\\TALib\\Classes\\CandleSetting' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Classes/CandleSetting.php',
+        'LupeCode\\phpTraderNative\\TALib\\Classes\\MoneyFlow' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Classes/MoneyFlow.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\Core' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/Core.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\CycleIndicators' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/CycleIndicators.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\Lookback' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/Lookback.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\MathOperators' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/MathOperators.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\MathTransform' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/MathTransform.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\MomentumIndicators' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/MomentumIndicators.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\OverlapStudies' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/OverlapStudies.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\PatternRecognition' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/PatternRecognition.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\PriceTransform' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/PriceTransform.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\StatisticFunctions' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/StatisticFunctions.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\VolatilityIndicators' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/VolatilityIndicators.php',
+        'LupeCode\\phpTraderNative\\TALib\\Core\\VolumeIndicators' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Core/VolumeIndicators.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\CandleSettingType' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/CandleSettingType.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\Compatibility' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/Compatibility.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\MovingAverageType' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/MovingAverageType.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\RangeType' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/RangeType.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\ReturnCode' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/ReturnCode.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\ReturnMessages' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/ReturnMessages.php',
+        'LupeCode\\phpTraderNative\\TALib\\Enum\\UnstablePeriodFunctionID' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TALib/Enum/UnstablePeriodFunctionID.php',
+        'LupeCode\\phpTraderNative\\Trader' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/Trader.php',
+        'LupeCode\\phpTraderNative\\TraderFriendly' => __DIR__ . '/..' . '/lupecode/php-trader-native/source/TraderFriendly.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegration' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegration.php',
         'Mockery\\Adapter\\Phpunit\\MockeryPHPUnitIntegrationAssertPostConditions' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryPHPUnitIntegrationAssertPostConditions.php',
         'Mockery\\Adapter\\Phpunit\\MockeryTestCase' => __DIR__ . '/..' . '/mockery/mockery/library/Mockery/Adapter/Phpunit/MockeryTestCase.php',
