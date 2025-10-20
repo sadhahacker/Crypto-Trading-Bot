@@ -5,6 +5,14 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
+$installed_marker = __DIR__ . '/../storage/framework/installed';
+
+// If not installed, show probe.php and stop.
+if (! file_exists($installed_marker)) {
+    require __DIR__ . '/probe.php';
+    exit;
+}
+
 // Determine if the application is in maintenance mode...
 if (file_exists($maintenance = __DIR__.'/../storage/framework/maintenance.php')) {
     require $maintenance;
