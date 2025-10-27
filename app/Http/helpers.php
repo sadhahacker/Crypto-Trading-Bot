@@ -36,3 +36,13 @@ function successResponse(string $message = '', array|string $data = '', int $sta
 
     return response()->json($response, $statusCode);
 }
+
+
+function assertLink(string $type, string $key){
+    return asset(\Config::get("link.{$type}.{$key}"));
+}
+
+function isActiveMenu($pattern)
+{
+    return request()->is($pattern) ? 'active' : '';
+}

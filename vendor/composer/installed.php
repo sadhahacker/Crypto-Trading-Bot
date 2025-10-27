@@ -3,7 +3,7 @@
         'name' => 'laravel/laravel',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '405a1b266bf579c793c49ed26d9051b327a16b54',
+        'reference' => '9136ea6addc43ddbb0815d0267166c918a0f03cc',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -417,7 +417,7 @@
         'laravel/laravel' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '405a1b266bf579c793c49ed26d9051b327a16b54',
+            'reference' => '9136ea6addc43ddbb0815d0267166c918a0f03cc',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),
@@ -550,12 +550,14 @@
             'dev_requirement' => false,
         ),
         'lupecode/php-trader-native' => array(
-            'pretty_version' => 'v2.2.0',
-            'version' => '2.2.0.0',
-            'reference' => '45f2ab3d98e7b2f6b4568ac791ad8c9a50564cc4',
+            'pretty_version' => 'dev-master',
+            'version' => 'dev-master',
+            'reference' => '5f1417dc678bbd491810bbf16465c7bd0750eb35',
             'type' => 'library',
             'install_path' => __DIR__ . '/../lupecode/php-trader-native',
-            'aliases' => array(),
+            'aliases' => array(
+                0 => '9999999-dev',
+            ),
             'dev_requirement' => false,
         ),
         'mockery/mockery' => array(

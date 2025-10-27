@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "fca26ea0a2c7f5f26606c202ff92beb3",
+    "content-hash": "27a1ff022429c447a665e896f90ea8cf",
     "packages": [
         {
             "name": "brick/math",
@@ -2462,16 +2462,16 @@
         },
         {
             "name": "lupecode/php-trader-native",
-            "version": "v2.2.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/LupeCode/phpTraderNative.git",
-                "reference": "45f2ab3d98e7b2f6b4568ac791ad8c9a50564cc4"
+                "reference": "5f1417dc678bbd491810bbf16465c7bd0750eb35"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LupeCode/phpTraderNative/zipball/45f2ab3d98e7b2f6b4568ac791ad8c9a50564cc4",
-                "reference": "45f2ab3d98e7b2f6b4568ac791ad8c9a50564cc4",
+                "url": "https://api.github.com/repos/LupeCode/phpTraderNative/zipball/5f1417dc678bbd491810bbf16465c7bd0750eb35",
+                "reference": "5f1417dc678bbd491810bbf16465c7bd0750eb35",
                 "shasum": ""
             },
             "require": {
@@ -2483,17 +2483,22 @@
                 "phpbench/phpbench": "~1.2.14",
                 "phpunit/phpunit": "~10.3.1"
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
-                "files": [
-                    "source/polyfill.php"
-                ],
                 "psr-4": {
                     "LupeCode\\phpTraderNative\\": "source/",
                     "LupeCode\\phpTraderNativeTest\\": "tests/"
-                }
+                },
+                "files": [
+                    "source/polyfill.php"
+                ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "scripts": {
+                "test": [
+                    "phpunit"
+                ]
+            },
             "license": [
                 "GPL-3.0-or-later"
             ],
@@ -2507,10 +2512,10 @@
             ],
             "description": "An native version of the PHP Trader extension.",
             "support": {
-                "issues": "https://github.com/LupeCode/phpTraderNative/issues",
-                "source": "https://github.com/LupeCode/phpTraderNative/tree/v2.2.0"
+                "source": "https://github.com/LupeCode/phpTraderNative/tree/master",
+                "issues": "https://github.com/LupeCode/phpTraderNative/issues"
             },
-            "time": "2025-02-04T22:40:28+00:00"
+            "time": "2025-02-08T17:11:49+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -9782,13 +9787,14 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "ccxt/ccxt": 20
+        "ccxt/ccxt": 20,
+        "lupecode/php-trader-native": 20
     },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

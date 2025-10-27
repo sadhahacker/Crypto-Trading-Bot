@@ -5,17 +5,21 @@ import MainLayout from "@/pages/Master/MainLayout"
 import axios from "axios";
 import BotListPage from "@/pages/BotListPage.tsx";
 import SignalsPage from "@/pages/SignalsPage.tsx";
+import ExchangeSettingsPage from "@/pages/Settings/ExchangeSettingsPage.tsx";
 
-axios.defaults.baseURL = import.meta.env.VITE_APP_URL
+// @ts-ignore
+const baseUrl = new URL(import.meta.env.VITE_APP_URL).pathname;
+axios.defaults.baseURL = baseUrl
 
 function App() {
     return (
-        <BrowserRouter basename="/">
+        <BrowserRouter basename={baseUrl}>
             <Routes>
                 <Route element={<MainLayout />}>
                     <Route index element={<Dashboard />} />
                     <Route path="dashboard" element={<Dashboard />} />
                     <Route path="bots" element={<BotListPage />} />
+                    <Route path="exchange/settings" element={<ExchangeSettingsPage />} />
                     <Route path="bots/:botId/signals" element={<SignalsPage />} />
                 </Route>
             </Routes>

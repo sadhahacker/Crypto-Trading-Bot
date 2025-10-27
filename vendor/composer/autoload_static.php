@@ -448,8 +448,8 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
         ),
         'Phrity\\Net\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phrity/net-uri/src',
-            1 => __DIR__ . '/..' . '/phrity/net-stream/src',
+            0 => __DIR__ . '/..' . '/phrity/net-stream/src',
+            1 => __DIR__ . '/..' . '/phrity/net-uri/src',
         ),
         'Phrity\\Http\\' => 
         array (
@@ -646,14 +646,20 @@ class ComposerStaticInit88970a0117c062eed55fa8728fc43833
     public static $classMap = array (
         'App\\Console\\Commands\\RunLorentzian' => __DIR__ . '/../..' . '/app/Console/Commands/RunLorentzian.php',
         'App\\Console\\Commands\\RunTrade' => __DIR__ . '/../..' . '/app/Console/Commands/RunTrade.php',
+        'App\\Http\\Controllers\\Admin\\ArbitrageController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ArbitrageController.php',
+        'App\\Http\\Controllers\\Admin\\BacktestController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BacktestController.php',
         'App\\Http\\Controllers\\Admin\\BotsController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/BotsController.php',
         'App\\Http\\Controllers\\Admin\\DashboardController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/DashboardController.php',
+        'App\\Http\\Controllers\\Admin\\ExchangeSettingController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ExchangeSettingController.php',
+        'App\\Http\\Controllers\\Common\\DataFrame' => __DIR__ . '/../..' . '/app/Http/Controllers/Common/DataFrame.php',
         'App\\Http\\Controllers\\Controller' => __DIR__ . '/../..' . '/app/Http/Controllers/Controller.php',
+        'App\\Http\\Controllers\\Strategies\\EmaRsiVolumeStrategy' => __DIR__ . '/../..' . '/app/Http/Controllers/Strategies/EmaRsiVolumeStrategy.php',
         'App\\Http\\Controllers\\Trading\\AccountSetupController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/AccountSetupController.php',
         'App\\Http\\Controllers\\Trading\\ExecuteTradeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/ExecuteTradeController.php',
         'App\\Http\\Controllers\\Trading\\IndicatorController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/IndicatorController.php',
         'App\\Http\\Controllers\\Trading\\TradeController' => __DIR__ . '/../..' . '/app/Http/Controllers/Trading/TradeController.php',
         'App\\Models\\BotConfiguration' => __DIR__ . '/../..' . '/app/Models/BotConfiguration.php',
+        'App\\Models\\ExchangeSetting' => __DIR__ . '/../..' . '/app/Models/ExchangeSetting.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
         'App\\Plugins\\LorentzianClassification\\ScriptsRunner' => __DIR__ . '/../..' . '/app/Plugins/LorentzianClassification/ScriptsRunner.php',
         'App\\Providers\\AppServiceProvider' => __DIR__ . '/../..' . '/app/Providers/AppServiceProvider.php',

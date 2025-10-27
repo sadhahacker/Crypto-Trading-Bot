@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { TrendingUp, TrendingDown, Wallet, BarChart3 } from "lucide-react"
+import { Wallet } from "lucide-react"
 import axios from "axios"
 
 type Asset = {

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\BotsController;
+use App\Http\Controllers\Admin\ExchangeSettingController;
 use App\Http\Controllers\Common\DataFrame;
 use App\Http\Controllers\Strategies\EmaRsiVolumeStrategy;
 use App\Http\Controllers\Trading\TradeController;

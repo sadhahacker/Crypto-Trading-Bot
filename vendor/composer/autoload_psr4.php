@@ -64,7 +64,7 @@ return array(
     'Psr\\Container\\' => array($vendorDir . '/psr/container/src'),
     'Psr\\Clock\\' => array($vendorDir . '/psr/clock/src'),
     'Phrity\\Util\\' => array($vendorDir . '/phrity/util-errorhandler/src'),
-    'Phrity\\Net\\' => array($vendorDir . '/phrity/net-uri/src', $vendorDir . '/phrity/net-stream/src'),
+    'Phrity\\Net\\' => array($vendorDir . '/phrity/net-stream/src', $vendorDir . '/phrity/net-uri/src'),
     'Phrity\\Http\\' => array($vendorDir . '/phrity/http/src'),
     'Phrity\\Comparison\\' => array($vendorDir . '/phrity/comparison/src'),
     'PhpParser\\' => array($vendorDir . '/nikic/php-parser/lib/PhpParser'),

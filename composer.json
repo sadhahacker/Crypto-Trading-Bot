@@ -8,14 +8,20 @@
         "framework"
     ],
     "license": "MIT",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/LupeCode/phpTraderNative.git"
+        }
+    ],
     "require": {
         "php": "^8.2",
         "ccxt/ccxt": "dev-master",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
-        "lupecode/php-trader-native": "^2.2",
-        "phrity/websocket": "^3.6"
+        "phrity/websocket": "^3.6",
+        "lupecode/php-trader-native": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

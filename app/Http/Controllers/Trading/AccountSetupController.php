@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Trading;
 
 use App\Http\Controllers\Controller;
+use App\Models\ExchangeSetting;
 use Illuminate\Http\Request;
 
 class AccountSetupController extends Controller
@@ -11,7 +12,10 @@ class AccountSetupController extends Controller
 
     public function __construct()
     {
-        $exchangeName = config('trading.exchange_name'); // e.g., "binance"
+        $settings = ExchangeSetting::first();
+
+        // Fallbacks if settings table empty
+        $exchangeName = $settings->exchange_name ?? config('trading.exchange_name', 'binance');
         $fullClass = "\\ccxt\\{$exchangeName}";
 
         if (!class_exists($fullClass)) {
@@ -19,14 +23,16 @@ class AccountSetupController extends Controller
         }
 
         $this->exchange = new $fullClass([
-            'apiKey' => config('trading.api_key'),
-            'secret' => config('trading.api_secret'),
+            'apiKey' => $settings->api_key ?? config('trading.api_key'),
+            'secret' => $settings->api_secret ?? config('trading.api_secret'),
             'enableRateLimit' => true,
-            'options' => config('trading.options'),
+            'options' => [
+                'defaultType' => $settings->default_type ?? config('trading.options.defaultType', 'future'),
+            ],
         ]);
 
         if (method_exists($this->exchange, 'load_time_difference')) {
-            $this->exchange->load_time_difference(); // Sync local time with Binance server
+            $this->exchange->load_time_difference(); // Sync local time with exchange server
         }
     }
 
