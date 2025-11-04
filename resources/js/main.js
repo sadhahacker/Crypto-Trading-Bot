@@ -2,12 +2,19 @@
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
+// jQuery validation
 import 'jquery-validation';
 
-// Import Bootstrap JS (needs jQuery)
-import 'bootstrap/dist/js/bootstrap.bundle.min.js';
+// DataTables
+import DataTable from 'datatables.net-dt';
+window.DataTable = DataTable;
 
-// Import AdminLTE JS
+// Bootstrap (ES module import)
+import * as bootstrap from 'bootstrap';
+window.bootstrap = bootstrap;
+
+// AdminLTE
 import 'admin-lte/dist/js/adminlte.js';
 
+// Your helpers
 import '../../public/assets/js/helpers.js';

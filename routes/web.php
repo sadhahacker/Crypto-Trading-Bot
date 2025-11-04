@@ -23,5 +23,7 @@ Route::post('exchange-settings', [ExchangeSettingController::class, 'update']);
 
 Route::resource('arbitrage', ArbitrageController::class);
 Route::get('signals/tester', [BacktestController::class, 'index']);
-Route::get('signals/tester/run', [BacktestController::class, 'runTesting']);
+Route::post('generate/backTestData', [BacktestController::class, 'generateBackTestData']);
+Route::get('backtest/files', [BacktestController::class, 'getGeneratedFiles']);
+Route::get('test', [BacktestController::class, 'testRunner']);
 

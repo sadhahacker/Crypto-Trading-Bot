@@ -1,0 +1,31 @@
+{
+  "name": "advanced-ta/lorentzian-classification",
+  "description": "Laravel PHP port of the Lorentzian Classification package (@advanced_ta)",
+  "type": "library",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Auto Port",
+      "email": "noreply@example.com"
+    }
+  ],
+  "require": {
+    "php": ">=8.1"
+  },
+  "autoload": {
+    "psr-4": {
+      "AdvancedTa\\LorentzianClassification\\": "src/"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "AdvancedTa\\LorentzianClassification\\Providers\\LorentzianClassificationServiceProvider"
+      ],
+      "aliases": {
+        "LorentzianClassification": "AdvancedTa\\LorentzianClassification\\Facades\\LorentzianClassification"
+      }
+    }
+  }
+}
+

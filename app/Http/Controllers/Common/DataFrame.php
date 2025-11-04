@@ -35,4 +35,21 @@ class DataFrame extends Controller
     public function getLastIndex(int $offset = 1): int {
         return $this->count() - $offset;
     }
+
+    public function toArray(): array
+    {
+        return $this->data;
+    }
+
+    public function getKeysWithData()
+    {
+        return [
+            'timestamp' => $this->getColumn('timestamp'),
+            'open' => $this->getColumn('open'),
+            'high' => $this->getColumn('high'),
+            'low' => $this->getColumn('low'),
+            'close' => $this->getColumn('close'),
+            'volume' => $this->getColumn('volume'),
+        ];
+    }
 }

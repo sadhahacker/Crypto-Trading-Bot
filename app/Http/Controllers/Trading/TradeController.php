@@ -9,7 +9,7 @@ use Illuminate\Support\Arr;
 
 class TradeController extends Controller
 {
-    protected $exchange;
+    public $exchange;
 
     public function __construct()
     {
