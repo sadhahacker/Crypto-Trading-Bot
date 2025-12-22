@@ -12,12 +12,11 @@ import testAggregate from './test.aggregate.js';
 import testSafeBalance from './test.safeBalance.js';
 import testLegacyHas from './test.legacyHas.js';
 import testTypes from './test.type.js';
-import testThrottlerPerformance from './test.throttlerPerformance.js';
 // todo: import testConfig from './test.config.js';
 // import './test.time.js' :todo
 // import './test.timeout_hang.js' :todo
 
-async function testLanguageSpecific () {
+function testLanguageSpecific () {
     testCamelCase ();
     testUnCamelCase ();
     testThrottle ();
@@ -26,7 +25,6 @@ async function testLanguageSpecific () {
     testSafeBalance ();
     testLegacyHas ();
     testTypes ();
-    await testThrottlerPerformance ();
     // testConfig ();
 }
 

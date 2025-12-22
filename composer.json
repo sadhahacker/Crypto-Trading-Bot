@@ -15,13 +15,14 @@
         }
     ],
     "require": {
-        "php": "^8.2",
-        "ccxt/ccxt": "dev-master",
+        "php": "^8.4",
+        "ccxt/ccxt": "^4.4",
         "laravel/framework": "^12.0",
         "laravel/sanctum": "^4.0",
         "laravel/tinker": "^2.10.1",
         "lupecode/php-trader-native": "dev-master",
         "phrity/websocket": "^3.6",
+        "stochastix/core": "dev-master",
         "yajra/laravel-datatables": "^12"
     },
     "require-dev": {
@@ -85,7 +86,8 @@
         "sort-packages": true,
         "allow-plugins": {
             "pestphp/pest-plugin": true,
-            "php-http/discovery": true
+            "php-http/discovery": true,
+            "williarin/cook": true
         }
     },
     "minimum-stability": "stable",
