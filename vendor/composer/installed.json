@@ -3227,7 +3227,7 @@
             "time": "2025-02-08T17:11:49+00:00",
             "default-branch": true,
             "type": "library",
-            "installation-source": "source",
+            "installation-source": "dist",
             "autoload": {
                 "psr-4": {
                     "LupeCode\\phpTraderNative\\": "source/",

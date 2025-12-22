@@ -46,10 +46,7 @@
     "autoload-dev": {
         "psr-4": {
             "Tests\\": "tests/"
-        },
-        "files": [
-            "vendor/ccxt/ccxt/ccxt.php"
-        ]
+        }
     },
     "scripts": {
         "post-autoload-dump": [
