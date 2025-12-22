@@ -1,18 +1,25 @@
 package ccxt
 
 type Krakenfutures struct {
-	*krakenfutures
-	Core          *krakenfutures
+	*KrakenfuturesCore
+	Core          *KrakenfuturesCore
 	exchangeTyped *ExchangeTyped
 }
 
 func NewKrakenfutures(userConfig map[string]interface{}) *Krakenfutures {
-	p := &krakenfutures{}
+	p := NewKrakenfuturesCore()
 	p.Init(userConfig)
 	return &Krakenfutures{
-		krakenfutures: p,
-		Core:          p,
-		exchangeTyped: NewExchangeTyped(&p.Exchange),
+		KrakenfuturesCore: p,
+		Core:              p,
+		exchangeTyped:     NewExchangeTyped(&p.Exchange),
+	}
+}
+func NewKrakenfuturesFromCore(core *KrakenfuturesCore) *Krakenfutures {
+	return &Krakenfutures{
+		KrakenfuturesCore: core,
+		Core:              core,
+		exchangeTyped:     NewExchangeTyped(&core.Exchange),
 	}
 }
 
@@ -23,7 +30,7 @@ func NewKrakenfutures(userConfig map[string]interface{}) *Krakenfutures {
  * @method
  * @name krakenfutures#fetchMarkets
  * @description Fetches the available trading markets from the exchange, Multi-collateral markets are returned as linear markets, but can be settled in multiple currencies
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instruments
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-instruments
  * @param {object} [params] exchange specific params
  * @returns An array of market structures
  */
@@ -38,12 +45,12 @@ func (this *Krakenfutures) FetchMarkets(params ...interface{}) ([]MarketInterfac
 /**
  * @method
  * @name krakenfutures#fetchOrderBook
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-orderbook
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-orderbook
  * @description Fetches a list of open orders in a market
  * @param {string} symbol Unified market symbol
  * @param {int} [limit] Not used by krakenfutures
  * @param {object} [params] exchange specific params
- * @returns An [order book structure]{@link https://docs.ccxt.com/#/?id=order-book-structure}
+ * @returns An [order book structure]{@link https://docs.ccxt.com/?id=order-book-structure}
  */
 func (this *Krakenfutures) FetchOrderBook(symbol string, options ...FetchOrderBookOptions) (OrderBook, error) {
 
@@ -73,10 +80,10 @@ func (this *Krakenfutures) FetchOrderBook(symbol string, options ...FetchOrderBo
  * @method
  * @name krakenfutures#fetchTickers
  * @description fetches price tickers for multiple markets, statistical information calculated over the past 24 hours for each market
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-tickers
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-tickers
  * @param {string[]} symbols unified symbols of the markets to fetch the ticker for, all market tickers are returned if not assigned
  * @param {object} [params] extra parameters specific to the exchange API endpoint
- * @returns {object} an array of [ticker structures]{@link https://docs.ccxt.com/#/?id=ticker-structure}
+ * @returns {object} an array of [ticker structures]{@link https://docs.ccxt.com/?id=ticker-structure}
  */
 func (this *Krakenfutures) FetchTickers(options ...FetchTickersOptions) (Tickers, error) {
 
@@ -105,7 +112,7 @@ func (this *Krakenfutures) FetchTickers(options ...FetchTickersOptions) (Tickers
 /**
  * @method
  * @name krakenfutures#fetchOHLCV
- * @see https://docs.futures.kraken.com/#http-api-charts-candles
+ * @see https://docs.kraken.com/api/docs/futures-api/charts/candles
  * @description fetches historical candlestick data containing the open, high, low, and close price, and the volume of a market
  * @param {string} symbol unified symbol of the market to fetch OHLCV data for
  * @param {string} timeframe the length of time each candle represents
@@ -152,8 +159,8 @@ func (this *Krakenfutures) FetchOHLCV(symbol string, options ...FetchOHLCVOption
 /**
  * @method
  * @name krakenfutures#fetchTrades
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-trade-history
- * @see https://docs.futures.kraken.com/#http-api-history-market-history-get-public-execution-events
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-history
+ * @see https://docs.kraken.com/api/docs/futures-api/history/get-public-execution-events
  * @description Fetch a history of filled trades that this account has made
  * @param {string} symbol Unified CCXT market symbol
  * @param {int} [since] Timestamp in ms of earliest trade. Not used by krakenfutures except in combination with params.until
@@ -162,7 +169,7 @@ func (this *Krakenfutures) FetchOHLCV(symbol string, options ...FetchOHLCVOption
  * @param {int} [params.until] Timestamp in ms of latest trade
  * @param {boolean} [params.paginate] default false, when true will automatically paginate by calling this endpoint multiple times. See in the docs all the [availble parameters](https://github.com/ccxt/ccxt/wiki/Manual#pagination-params)
  * @param {string} [params.method] The method to use to fetch trades. Can be 'historyGetMarketSymbolExecutions' or 'publicGetHistory' default is 'historyGetMarketSymbolExecutions'
- * @returns An array of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+ * @returns An array of [trade structures]{@link https://docs.ccxt.com/?id=trade-structure}
  */
 func (this *Krakenfutures) FetchTrades(symbol string, options ...FetchTradesOptions) ([]Trade, error) {
 
@@ -211,7 +218,7 @@ func (this *Krakenfutures) FetchTrades(symbol string, options ...FetchTradesOpti
  * @param {float} [params.stopLossPrice] the price that a stop loss order is triggered at
  * @param {float} [params.takeProfitPrice] the price that a take profit order is triggered at
  * @param {string} [params.triggerSignal] for triggerPrice, stopLossPrice and takeProfitPrice orders, the trigger price type, 'last', 'mark' or 'index', default is 'last'
- * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) CreateOrder(symbol string, typeVar string, side string, amount float64, options ...CreateOrderOptions) (Order, error) {
 
@@ -244,7 +251,7 @@ func (this *Krakenfutures) CreateOrder(symbol string, typeVar string, side strin
  * @see https://docs.kraken.com/api/docs/futures-api/trading/send-batch-order
  * @param {Array} orders list of orders to create, each object should contain the parameters required by createOrder, namely symbol, type, side, amount, price and params
  * @param {object} [params] extra parameters specific to the exchange API endpoint
- * @returns {object} an [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns {object} an [order structure]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) CreateOrders(orders []OrderRequest, options ...CreateOrdersOptions) ([]Order, error) {
 
@@ -268,7 +275,7 @@ func (this *Krakenfutures) CreateOrders(orders []OrderRequest, options ...Create
 /**
  * @method
  * @name krakenfutures#editOrder
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-edit-order
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/edit-order-spring
  * @description Edit an open order on the exchange
  * @param {string} id order id
  * @param {string} symbol Not used by Krakenfutures
@@ -277,7 +284,7 @@ func (this *Krakenfutures) CreateOrders(orders []OrderRequest, options ...Create
  * @param {float} amount Order size
  * @param {float} [price] Price to fill order at
  * @param {object} [params] Exchange specific params
- * @returns An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns An [order structure]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) EditOrder(id string, symbol string, typeVar string, side string, options ...EditOrderOptions) (Order, error) {
 
@@ -311,12 +318,12 @@ func (this *Krakenfutures) EditOrder(id string, symbol string, typeVar string, s
 /**
  * @method
  * @name krakenfutures#cancelOrder
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-order
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/cancel-order
  * @description Cancel an open order on the exchange
  * @param {string} id Order id
  * @param {string} symbol Not used by Krakenfutures
  * @param {object} [params] Exchange specific params
- * @returns An [order structure]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns An [order structure]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) CancelOrder(id string, options ...CancelOrderOptions) (Order, error) {
 
@@ -346,14 +353,14 @@ func (this *Krakenfutures) CancelOrder(id string, options ...CancelOrderOptions)
  * @method
  * @name krakenfutures#cancelOrders
  * @description cancel multiple orders
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-batch-order-management
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/send-batch-order
  * @param {string[]} ids order ids
  * @param {string} [symbol] unified market symbol
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  *
  * EXCHANGE SPECIFIC PARAMETERS
  * @param {string[]} [params.clientOrderIds] max length 10 e.g. ["my_id_1","my_id_2"]
- * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns {object} an list of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) CancelOrders(ids []string, options ...CancelOrdersOptions) ([]Order, error) {
 
@@ -382,7 +389,7 @@ func (this *Krakenfutures) CancelOrders(ids []string, options ...CancelOrdersOpt
 /**
  * @method
  * @name krakenfutures#cancelAllOrders
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-cancel-all-orders
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/cancel-all-orders
  * @description Cancels all orders on the exchange, including trigger orders
  * @param {str} symbol Unified market symbol
  * @param {dict} [params] Exchange specific params
@@ -416,7 +423,7 @@ func (this *Krakenfutures) CancelAllOrders(options ...CancelAllOrdersOptions) ([
  * @method
  * @name krakenfutures#cancelAllOrdersAfter
  * @description dead man's switch, cancel all orders after the given timeout
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-dead-man-39-s-switch
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/cancel-all-orders-after
  * @param {number} timeout time in milliseconds, 0 represents cancel the timer
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @returns {object} the api result
@@ -443,13 +450,13 @@ func (this *Krakenfutures) CancelAllOrdersAfter(timeout int64, options ...Cancel
 /**
  * @method
  * @name krakenfutures#fetchOpenOrders
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-order-management-get-open-orders
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-open-orders
  * @description Gets all open orders, including trigger orders, for an account from the exchange api
  * @param {string} symbol Unified market symbol
  * @param {int} [since] Timestamp (ms) of earliest order. (Not used by kraken api but filtered internally by CCXT)
  * @param {int} [limit] How many orders to return. (Not used by kraken api but filtered internally by CCXT)
  * @param {object} [params] Exchange specific parameters
- * @returns An array of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns An array of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) FetchOpenOrders(options ...FetchOpenOrdersOptions) ([]Order, error) {
 
@@ -494,7 +501,7 @@ func (this *Krakenfutures) FetchOpenOrders(options ...FetchOpenOrdersOptions) ([
  * @param {int} [since] Timestamp (ms) of earliest order.
  * @param {int} [limit] How many orders to return.
  * @param {object} [params] Exchange specific parameters
- * @returns An array of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns An array of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) FetchClosedOrders(options ...FetchClosedOrdersOptions) ([]Order, error) {
 
@@ -533,13 +540,13 @@ func (this *Krakenfutures) FetchClosedOrders(options ...FetchClosedOrdersOptions
 /**
  * @method
  * @name krakenfutures#fetchCanceledOrders
- * @see https://docs.futures.kraken.com/#http-api-history-account-history-get-order-events
+ * @see https://docs.kraken.com/api/docs/futures-api/history/get-order-events
  * @description Gets all canceled orders, including trigger orders, for an account from the exchange api
  * @param {string} symbol Unified market symbol
  * @param {int} [since] Timestamp (ms) of earliest order.
  * @param {int} [limit] How many orders to return.
  * @param {object} [params] Exchange specific parameters
- * @returns An array of [order structures]{@link https://docs.ccxt.com/#/?id=order-structure}
+ * @returns An array of [order structures]{@link https://docs.ccxt.com/?id=order-structure}
  */
 func (this *Krakenfutures) FetchCanceledOrders(options ...FetchCanceledOrdersOptions) ([]Order, error) {
 
@@ -579,13 +586,13 @@ func (this *Krakenfutures) FetchCanceledOrders(options ...FetchCanceledOrdersOpt
  * @method
  * @name krakenfutures#fetchMyTrades
  * @description fetch all trades made by the user
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-data-get-your-fills
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-fills
  * @param {string} symbol unified market symbol
  * @param {int} [since] *not used by the  api* the earliest time in ms to fetch trades for
  * @param {int} [limit] the maximum number of trades structures to retrieve
  * @param {object} [params] extra parameters specific to the exchange API endpoint
  * @param {int} [params.until] the latest time in ms to fetch entries for
- * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/#/?id=trade-structure}
+ * @returns {Trade[]} a list of [trade structures]{@link https://docs.ccxt.com/?id=trade-structure}
  */
 func (this *Krakenfutures) FetchMyTrades(options ...FetchMyTradesOptions) ([]Trade, error) {
 
@@ -624,12 +631,12 @@ func (this *Krakenfutures) FetchMyTrades(options ...FetchMyTradesOptions) ([]Tra
 /**
  * @method
  * @name krakenfutures#fetchBalance
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-wallets
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-accounts
  * @description Fetch the balance for a sub-account, all sub-account balances are inside 'info' in the response
  * @param {object} [params] Exchange specific parameters
  * @param {string} [params.type] The sub-account type to query the balance of, possible values include 'flex', 'cash'/'main'/'funding', or a market symbol * defaults to 'flex' *
  * @param {string} [params.symbol] A unified market symbol, when assigned the balance for a trading market that matches the symbol is returned
- * @returns A [balance structure]{@link https://docs.ccxt.com/#/?id=balance-structure}
+ * @returns A [balance structure]{@link https://docs.ccxt.com/?id=balance-structure}
  */
 func (this *Krakenfutures) FetchBalance(params ...interface{}) (Balances, error) {
 	res := <-this.Core.FetchBalance(params...)
@@ -643,10 +650,10 @@ func (this *Krakenfutures) FetchBalance(params ...interface{}) (Balances, error)
  * @method
  * @name krakenfutures#fetchFundingRates
  * @description fetch the current funding rates for multiple markets
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-market-data-get-tickers
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-tickers
  * @param {string[]} symbols unified market symbols
  * @param {object} [params] extra parameters specific to the exchange API endpoint
- * @returns {Order[]} an array of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-structure}
+ * @returns {Order[]} an array of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-structure}
  */
 func (this *Krakenfutures) FetchFundingRates(options ...FetchFundingRatesOptions) (FundingRates, error) {
 
@@ -676,12 +683,12 @@ func (this *Krakenfutures) FetchFundingRates(options ...FetchFundingRatesOptions
  * @method
  * @name krakenfutures#fetchFundingRateHistory
  * @description fetches historical funding rate prices
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-historical-funding-rates-historical-funding-rates
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/historical-funding-rates
  * @param {string} symbol unified symbol of the market to fetch the funding rate history for
  * @param {int} [since] timestamp in ms of the earliest funding rate to fetch
- * @param {int} [limit] the maximum amount of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure} to fetch
+ * @param {int} [limit] the maximum amount of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-history-structure} to fetch
  * @param {object} [params] extra parameters specific to the api endpoint
- * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/#/?id=funding-rate-history-structure}
+ * @returns {object[]} a list of [funding rate structures]{@link https://docs.ccxt.com/?id=funding-rate-history-structure}
  */
 func (this *Krakenfutures) FetchFundingRateHistory(options ...FetchFundingRateHistoryOptions) ([]FundingRateHistory, error) {
 
@@ -720,7 +727,7 @@ func (this *Krakenfutures) FetchFundingRateHistory(options ...FetchFundingRateHi
 /**
  * @method
  * @name krakenfutures#fetchPositions
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-account-information-get-open-positions
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-open-positions
  * @description Fetches current contract trading positions
  * @param {string[]} symbols List of unified symbols
  * @param {object} [params] Not used by krakenfutures
@@ -754,10 +761,10 @@ func (this *Krakenfutures) FetchPositions(options ...FetchPositionsOptions) ([]P
  * @method
  * @name krakenfutures#fetchLeverageTiers
  * @description retrieve information on the maximum leverage, and maintenance margin for trades of varying trade sizes
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-instrument-details-get-instruments
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-instruments
  * @param {string[]|undefined} symbols list of unified market symbols
  * @param {object} [params] extra parameters specific to the exchange API endpoint
- * @returns {object} a dictionary of [leverage tiers structures]{@link https://docs.ccxt.com/#/?id=leverage-tiers-structure}, indexed by market symbols
+ * @returns {object} a dictionary of [leverage tiers structures]{@link https://docs.ccxt.com/?id=leverage-tiers-structure}, indexed by market symbols
  */
 func (this *Krakenfutures) FetchLeverageTiers(options ...FetchLeverageTiersOptions) (LeverageTiers, error) {
 
@@ -790,7 +797,7 @@ func (this *Krakenfutures) FetchLeverageTiers(options ...FetchLeverageTiersOptio
  * @param {str} code Unified currency code
  * @param {float} amount Size of the transfer
  * @param {dict} [params] Exchange specific parameters
- * @returns a [transfer structure]{@link https://docs.ccxt.com/#/?id=transfer-structure}
+ * @returns a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
  */
 func (this *Krakenfutures) TransferOut(code string, amount interface{}, options ...TransferOutOptions) (TransferEntry, error) {
 
@@ -814,15 +821,15 @@ func (this *Krakenfutures) TransferOut(code string, amount interface{}, options 
 /**
  * @method
  * @name krakenfutures#transfer
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-wallet-transfer
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-transfers-initiate-withdrawal-to-spot-wallet
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/transfer
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/sub-account-transfer
  * @description transfers currencies between sub-accounts
  * @param {string} code Unified currency code
  * @param {float} amount Size of the transfer
  * @param {string} fromAccount 'main'/'funding'/'future', 'flex', or a unified market symbol
  * @param {string} toAccount 'main'/'funding', 'flex', 'spot' or a unified market symbol
  * @param {object} [params] Exchange specific parameters
- * @returns a [transfer structure]{@link https://docs.ccxt.com/#/?id=transfer-structure}
+ * @returns a [transfer structure]{@link https://docs.ccxt.com/?id=transfer-structure}
  */
 func (this *Krakenfutures) Transfer(code string, amount float64, fromAccount string, toAccount string, options ...TransferOptions) (TransferEntry, error) {
 
@@ -847,7 +854,7 @@ func (this *Krakenfutures) Transfer(code string, amount float64, fromAccount str
  * @method
  * @name krakenfutures#setLeverage
  * @description set the level of leverage for a market
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-set-the-leverage-setting-for-a-market
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/set-leverage-setting
  * @param {float} leverage the rate of leverage
  * @param {string} symbol unified market symbol
  * @param {object} [params] extra parameters specific to the exchange API endpoint
@@ -881,10 +888,10 @@ func (this *Krakenfutures) SetLeverage(leverage int64, options ...SetLeverageOpt
  * @method
  * @name krakenfutures#fetchLeverages
  * @description fetch the set leverage for all contract and margin markets
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-the-leverage-setting-for-a-market
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-leverage-setting
  * @param {string[]} [symbols] a list of unified market symbols
  * @param {object} [params] extra parameters specific to the exchange API endpoint
- * @returns {object} a list of [leverage structures]{@link https://docs.ccxt.com/#/?id=leverage-structure}
+ * @returns {object} a list of [leverage structures]{@link https://docs.ccxt.com/?id=leverage-structure}
  */
 func (this *Krakenfutures) FetchLeverages(options ...FetchLeveragesOptions) (Leverages, error) {
 
@@ -914,10 +921,10 @@ func (this *Krakenfutures) FetchLeverages(options ...FetchLeveragesOptions) (Lev
  * @method
  * @name krakenfutures#fetchLeverage
  * @description fetch the set leverage for a market
- * @see https://docs.futures.kraken.com/#http-api-trading-v3-api-multi-collateral-get-the-leverage-setting-for-a-market
+ * @see https://docs.kraken.com/api/docs/futures-api/trading/get-leverage-setting
  * @param {string} symbol unified market symbol
  * @param {object} [params] extra parameters specific to the exchange API endpoint
- * @returns {object} a [leverage structure]{@link https://docs.ccxt.com/#/?id=leverage-structure}
+ * @returns {object} a [leverage structure]{@link https://docs.ccxt.com/?id=leverage-structure}
  */
 func (this *Krakenfutures) FetchLeverage(symbol string, options ...FetchLeverageOptions) (Leverage, error) {
 
@@ -940,6 +947,15 @@ func (this *Krakenfutures) FetchLeverage(symbol string, options ...FetchLeverage
 
 // missing typed methods from base
 // nolint
+func (this *Krakenfutures) LoadMarkets(params ...interface{}) (map[string]MarketInterface, error) {
+	return this.exchangeTyped.LoadMarkets(params...)
+}
+func (this *Krakenfutures) CancelOrdersWithClientOrderIds(clientOrderIds []string, options ...CancelOrdersWithClientOrderIdsOptions) ([]Order, error) {
+	return this.exchangeTyped.CancelOrdersWithClientOrderIds(clientOrderIds, options...)
+}
+func (this *Krakenfutures) CancelOrderWithClientOrderId(clientOrderId string, options ...CancelOrderWithClientOrderIdOptions) (Order, error) {
+	return this.exchangeTyped.CancelOrderWithClientOrderId(clientOrderId, options...)
+}
 func (this *Krakenfutures) CancelOrdersForSymbols(orders []CancellationRequest, options ...CancelOrdersForSymbolsOptions) ([]Order, error) {
 	return this.exchangeTyped.CancelOrdersForSymbols(orders, options...)
 }
@@ -1017,6 +1033,9 @@ func (this *Krakenfutures) EditLimitOrder(id string, symbol string, side string,
 }
 func (this *Krakenfutures) EditLimitSellOrder(id string, symbol string, amount float64, options ...EditLimitSellOrderOptions) (Order, error) {
 	return this.exchangeTyped.EditLimitSellOrder(id, symbol, amount, options...)
+}
+func (this *Krakenfutures) EditOrderWithClientOrderId(clientOrderId string, symbol string, typeVar string, side string, options ...EditOrderWithClientOrderIdOptions) (Order, error) {
+	return this.exchangeTyped.EditOrderWithClientOrderId(clientOrderId, symbol, typeVar, side, options...)
 }
 func (this *Krakenfutures) EditOrders(orders []OrderRequest, options ...EditOrdersOptions) ([]Order, error) {
 	return this.exchangeTyped.EditOrders(orders, options...)
@@ -1168,6 +1187,9 @@ func (this *Krakenfutures) FetchOptionChain(code string, options ...FetchOptionC
 func (this *Krakenfutures) FetchOrder(id string, options ...FetchOrderOptions) (Order, error) {
 	return this.exchangeTyped.FetchOrder(id, options...)
 }
+func (this *Krakenfutures) FetchOrderWithClientOrderId(clientOrderId string, options ...FetchOrderWithClientOrderIdOptions) (Order, error) {
+	return this.exchangeTyped.FetchOrderWithClientOrderId(clientOrderId, options...)
+}
 func (this *Krakenfutures) FetchOrderBooks(options ...FetchOrderBooksOptions) (OrderBooks, error) {
 	return this.exchangeTyped.FetchOrderBooks(options...)
 }
@@ -1251,4 +1273,226 @@ func (this *Krakenfutures) SetPositionMode(hedged bool, options ...SetPositionMo
 }
 func (this *Krakenfutures) Withdraw(code string, amount float64, address string, options ...WithdrawOptions) (Transaction, error) {
 	return this.exchangeTyped.Withdraw(code, amount, address, options...)
+}
+func (this *Krakenfutures) CancelAllOrdersWs(options ...CancelAllOrdersWsOptions) ([]Order, error) {
+	return this.exchangeTyped.CancelAllOrdersWs(options...)
+}
+func (this *Krakenfutures) CancelOrdersWs(ids []string, options ...CancelOrdersWsOptions) ([]Order, error) {
+	return this.exchangeTyped.CancelOrdersWs(ids, options...)
+}
+func (this *Krakenfutures) CancelOrderWs(id string, options ...CancelOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CancelOrderWs(id, options...)
+}
+func (this *Krakenfutures) CreateLimitBuyOrderWs(symbol string, amount float64, price float64, options ...CreateLimitBuyOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateLimitBuyOrderWs(symbol, amount, price, options...)
+}
+func (this *Krakenfutures) CreateLimitOrderWs(symbol string, side string, amount float64, price float64, options ...CreateLimitOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateLimitOrderWs(symbol, side, amount, price, options...)
+}
+func (this *Krakenfutures) CreateLimitSellOrderWs(symbol string, amount float64, price float64, options ...CreateLimitSellOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateLimitSellOrderWs(symbol, amount, price, options...)
+}
+func (this *Krakenfutures) CreateMarketBuyOrderWs(symbol string, amount float64, options ...CreateMarketBuyOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateMarketBuyOrderWs(symbol, amount, options...)
+}
+func (this *Krakenfutures) CreateMarketOrderWithCostWs(symbol string, side string, cost float64, options ...CreateMarketOrderWithCostWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateMarketOrderWithCostWs(symbol, side, cost, options...)
+}
+func (this *Krakenfutures) CreateMarketOrderWs(symbol string, side string, amount float64, options ...CreateMarketOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateMarketOrderWs(symbol, side, amount, options...)
+}
+func (this *Krakenfutures) CreateMarketSellOrderWs(symbol string, amount float64, options ...CreateMarketSellOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateMarketSellOrderWs(symbol, amount, options...)
+}
+func (this *Krakenfutures) CreateOrdersWs(orders []OrderRequest, options ...CreateOrdersWsOptions) ([]Order, error) {
+	return this.exchangeTyped.CreateOrdersWs(orders, options...)
+}
+func (this *Krakenfutures) CreateOrderWithTakeProfitAndStopLossWs(symbol string, typeVar string, side string, amount float64, options ...CreateOrderWithTakeProfitAndStopLossWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateOrderWithTakeProfitAndStopLossWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreatePostOnlyOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreatePostOnlyOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreatePostOnlyOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateReduceOnlyOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateReduceOnlyOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateReduceOnlyOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateStopLimitOrderWs(symbol string, side string, amount float64, price float64, triggerPrice float64, options ...CreateStopLimitOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateStopLimitOrderWs(symbol, side, amount, price, triggerPrice, options...)
+}
+func (this *Krakenfutures) CreateStopLossOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateStopLossOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateStopLossOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateStopMarketOrderWs(symbol string, side string, amount float64, triggerPrice float64, options ...CreateStopMarketOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateStopMarketOrderWs(symbol, side, amount, triggerPrice, options...)
+}
+func (this *Krakenfutures) CreateStopOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateStopOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateStopOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateTakeProfitOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateTakeProfitOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateTakeProfitOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateTrailingAmountOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateTrailingAmountOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateTrailingAmountOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateTrailingPercentOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateTrailingPercentOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateTrailingPercentOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) CreateTriggerOrderWs(symbol string, typeVar string, side string, amount float64, options ...CreateTriggerOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.CreateTriggerOrderWs(symbol, typeVar, side, amount, options...)
+}
+func (this *Krakenfutures) EditOrderWs(id string, symbol string, typeVar string, side string, options ...EditOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.EditOrderWs(id, symbol, typeVar, side, options...)
+}
+func (this *Krakenfutures) FetchBalanceWs(params ...interface{}) (Balances, error) {
+	return this.exchangeTyped.FetchBalanceWs(params...)
+}
+func (this *Krakenfutures) FetchClosedOrdersWs(options ...FetchClosedOrdersWsOptions) ([]Order, error) {
+	return this.exchangeTyped.FetchClosedOrdersWs(options...)
+}
+func (this *Krakenfutures) FetchDepositsWs(options ...FetchDepositsWsOptions) (map[string]interface{}, error) {
+	return this.exchangeTyped.FetchDepositsWs(options...)
+}
+func (this *Krakenfutures) FetchMyTradesWs(options ...FetchMyTradesWsOptions) ([]Trade, error) {
+	return this.exchangeTyped.FetchMyTradesWs(options...)
+}
+func (this *Krakenfutures) FetchOHLCVWs(symbol string, options ...FetchOHLCVWsOptions) ([]OHLCV, error) {
+	return this.exchangeTyped.FetchOHLCVWs(symbol, options...)
+}
+func (this *Krakenfutures) FetchOpenOrdersWs(options ...FetchOpenOrdersWsOptions) ([]Order, error) {
+	return this.exchangeTyped.FetchOpenOrdersWs(options...)
+}
+func (this *Krakenfutures) FetchOrderBookWs(symbol string, options ...FetchOrderBookWsOptions) (OrderBook, error) {
+	return this.exchangeTyped.FetchOrderBookWs(symbol, options...)
+}
+func (this *Krakenfutures) FetchOrdersByStatusWs(status string, options ...FetchOrdersByStatusWsOptions) ([]Order, error) {
+	return this.exchangeTyped.FetchOrdersByStatusWs(status, options...)
+}
+func (this *Krakenfutures) FetchOrdersWs(options ...FetchOrdersWsOptions) ([]Order, error) {
+	return this.exchangeTyped.FetchOrdersWs(options...)
+}
+func (this *Krakenfutures) FetchOrderWs(id string, options ...FetchOrderWsOptions) (Order, error) {
+	return this.exchangeTyped.FetchOrderWs(id, options...)
+}
+func (this *Krakenfutures) FetchPositionsForSymbolWs(symbol string, options ...FetchPositionsForSymbolWsOptions) ([]Position, error) {
+	return this.exchangeTyped.FetchPositionsForSymbolWs(symbol, options...)
+}
+func (this *Krakenfutures) FetchPositionsWs(options ...FetchPositionsWsOptions) ([]Position, error) {
+	return this.exchangeTyped.FetchPositionsWs(options...)
+}
+func (this *Krakenfutures) FetchPositionWs(symbol string, options ...FetchPositionWsOptions) ([]Position, error) {
+	return this.exchangeTyped.FetchPositionWs(symbol, options...)
+}
+func (this *Krakenfutures) FetchTickersWs(options ...FetchTickersWsOptions) (Tickers, error) {
+	return this.exchangeTyped.FetchTickersWs(options...)
+}
+func (this *Krakenfutures) FetchTickerWs(symbol string, options ...FetchTickerWsOptions) (Ticker, error) {
+	return this.exchangeTyped.FetchTickerWs(symbol, options...)
+}
+func (this *Krakenfutures) FetchTradesWs(symbol string, options ...FetchTradesWsOptions) ([]Trade, error) {
+	return this.exchangeTyped.FetchTradesWs(symbol, options...)
+}
+func (this *Krakenfutures) FetchTradingFeesWs(params ...interface{}) (TradingFees, error) {
+	return this.exchangeTyped.FetchTradingFeesWs(params...)
+}
+func (this *Krakenfutures) FetchWithdrawalsWs(options ...FetchWithdrawalsWsOptions) (map[string]interface{}, error) {
+	return this.exchangeTyped.FetchWithdrawalsWs(options...)
+}
+func (this *Krakenfutures) UnWatchBidsAsks(options ...UnWatchBidsAsksOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchBidsAsks(options...)
+}
+func (this *Krakenfutures) UnWatchMyTrades(options ...UnWatchMyTradesOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchMyTrades(options...)
+}
+func (this *Krakenfutures) UnWatchOHLCV(symbol string, options ...UnWatchOHLCVOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchOHLCV(symbol, options...)
+}
+func (this *Krakenfutures) UnWatchOHLCVForSymbols(symbolsAndTimeframes [][]string, options ...UnWatchOHLCVForSymbolsOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchOHLCVForSymbols(symbolsAndTimeframes, options...)
+}
+func (this *Krakenfutures) UnWatchOrderBook(symbol string, options ...UnWatchOrderBookOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchOrderBook(symbol, options...)
+}
+func (this *Krakenfutures) UnWatchOrderBookForSymbols(symbols []string, options ...UnWatchOrderBookForSymbolsOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchOrderBookForSymbols(symbols, options...)
+}
+func (this *Krakenfutures) UnWatchOrders(options ...UnWatchOrdersOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchOrders(options...)
+}
+func (this *Krakenfutures) UnWatchTicker(symbol string, options ...UnWatchTickerOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchTicker(symbol, options...)
+}
+func (this *Krakenfutures) UnWatchTickers(options ...UnWatchTickersOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchTickers(options...)
+}
+func (this *Krakenfutures) UnWatchTrades(symbol string, options ...UnWatchTradesOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchTrades(symbol, options...)
+}
+func (this *Krakenfutures) UnWatchTradesForSymbols(symbols []string, options ...UnWatchTradesForSymbolsOptions) (interface{}, error) {
+	return this.exchangeTyped.UnWatchTradesForSymbols(symbols, options...)
+}
+func (this *Krakenfutures) WatchBalance(params ...interface{}) (Balances, error) {
+	return this.exchangeTyped.WatchBalance(params...)
+}
+func (this *Krakenfutures) WatchBidsAsks(options ...WatchBidsAsksOptions) (Tickers, error) {
+	return this.exchangeTyped.WatchBidsAsks(options...)
+}
+func (this *Krakenfutures) WatchLiquidations(symbol string, options ...WatchLiquidationsOptions) ([]Liquidation, error) {
+	return this.exchangeTyped.WatchLiquidations(symbol, options...)
+}
+func (this *Krakenfutures) WatchMarkPrice(symbol string, options ...WatchMarkPriceOptions) (Ticker, error) {
+	return this.exchangeTyped.WatchMarkPrice(symbol, options...)
+}
+func (this *Krakenfutures) WatchMarkPrices(options ...WatchMarkPricesOptions) (Tickers, error) {
+	return this.exchangeTyped.WatchMarkPrices(options...)
+}
+func (this *Krakenfutures) WatchMyLiquidations(symbol string, options ...WatchMyLiquidationsOptions) ([]Liquidation, error) {
+	return this.exchangeTyped.WatchMyLiquidations(symbol, options...)
+}
+func (this *Krakenfutures) WatchMyLiquidationsForSymbols(symbols []string, options ...WatchMyLiquidationsForSymbolsOptions) ([]Liquidation, error) {
+	return this.exchangeTyped.WatchMyLiquidationsForSymbols(symbols, options...)
+}
+func (this *Krakenfutures) WatchMyTrades(options ...WatchMyTradesOptions) ([]Trade, error) {
+	return this.exchangeTyped.WatchMyTrades(options...)
+}
+func (this *Krakenfutures) WatchOHLCV(symbol string, options ...WatchOHLCVOptions) ([]OHLCV, error) {
+	return this.exchangeTyped.WatchOHLCV(symbol, options...)
+}
+func (this *Krakenfutures) WatchOHLCVForSymbols(symbolsAndTimeframes [][]string, options ...WatchOHLCVForSymbolsOptions) (map[string]map[string][]OHLCV, error) {
+	return this.exchangeTyped.WatchOHLCVForSymbols(symbolsAndTimeframes, options...)
+}
+func (this *Krakenfutures) WatchOrderBook(symbol string, options ...WatchOrderBookOptions) (OrderBook, error) {
+	return this.exchangeTyped.WatchOrderBook(symbol, options...)
+}
+func (this *Krakenfutures) WatchOrderBookForSymbols(symbols []string, options ...WatchOrderBookForSymbolsOptions) (OrderBook, error) {
+	return this.exchangeTyped.WatchOrderBookForSymbols(symbols, options...)
+}
+func (this *Krakenfutures) WatchOrders(options ...WatchOrdersOptions) ([]Order, error) {
+	return this.exchangeTyped.WatchOrders(options...)
+}
+func (this *Krakenfutures) WatchOrdersForSymbols(symbols []string, options ...WatchOrdersForSymbolsOptions) ([]Order, error) {
+	return this.exchangeTyped.WatchOrdersForSymbols(symbols, options...)
+}
+func (this *Krakenfutures) WatchPosition(options ...WatchPositionOptions) (Position, error) {
+	return this.exchangeTyped.WatchPosition(options...)
+}
+func (this *Krakenfutures) WatchPositions(options ...WatchPositionsOptions) ([]Position, error) {
+	return this.exchangeTyped.WatchPositions(options...)
+}
+func (this *Krakenfutures) WatchTicker(symbol string, options ...WatchTickerOptions) (Ticker, error) {
+	return this.exchangeTyped.WatchTicker(symbol, options...)
+}
+func (this *Krakenfutures) WatchTickers(options ...WatchTickersOptions) (Tickers, error) {
+	return this.exchangeTyped.WatchTickers(options...)
+}
+func (this *Krakenfutures) WatchTrades(symbol string, options ...WatchTradesOptions) ([]Trade, error) {
+	return this.exchangeTyped.WatchTrades(symbol, options...)
+}
+func (this *Krakenfutures) WatchTradesForSymbols(symbols []string, options ...WatchTradesForSymbolsOptions) ([]Trade, error) {
+	return this.exchangeTyped.WatchTradesForSymbols(symbols, options...)
+}
+func (this *Krakenfutures) WithdrawWs(code string, amount float64, address string, options ...WithdrawWsOptions) (Transaction, error) {
+	return this.exchangeTyped.WithdrawWs(code, amount, address, options...)
 }

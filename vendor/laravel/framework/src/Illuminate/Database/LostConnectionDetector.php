@@ -49,6 +49,7 @@ class LostConnectionDetector implements LostConnectionDetectorContract
             'SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Name or service not known',
             'SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo for',
             'SQLSTATE[HY000]: General error: 7 SSL SYSCALL error: EOF detected',
+            'SSL error: unexpected eof',
             'SQLSTATE[HY000] [2002] Connection timed out',
             'SSL: Connection timed out',
             'SQLSTATE[HY000]: General error: 1105 The last transaction was aborted due to Seamless Scaling. Please retry.',
@@ -83,6 +84,12 @@ class LostConnectionDetector implements LostConnectionDetectorContract
             'Connection lost',
             'Broken pipe',
             'SQLSTATE[25006]: Read only sql transaction: 7',
+            'vtgate connection error: no healthy endpoints',
+            'primary is not serving, there may be a reparent operation in progress',
+            'current keyspace is being resharded',
+            'no healthy tablet available',
+            'transaction pool connection limit exceeded',
+            'SSL operation failed with code 5',
         ]);
     }
 }

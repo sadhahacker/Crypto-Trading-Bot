@@ -2,6 +2,8 @@
 
 namespace Illuminate\Support\Facades;
 
+use Mockery;
+
 /**
  * @method static \Illuminate\Contracts\Cache\Repository store(string|null $name = null)
  * @method static \Illuminate\Contracts\Cache\Repository driver(string|null $driver = null)
@@ -38,7 +40,7 @@ namespace Illuminate\Support\Facades;
  * @method static bool delete(string $key)
  * @method static bool deleteMultiple(iterable $keys)
  * @method static bool clear()
- * @method static \Illuminate\Cache\TaggedCache tags(array|mixed $names)
+ * @method static \Illuminate\Cache\TaggedCache tags(mixed $names)
  * @method static string|null getName()
  * @method static bool supportsTags()
  * @method static int|null getDefaultCacheTime()
@@ -70,5 +72,28 @@ class Cache extends Facade
     protected static function getFacadeAccessor()
     {
         return 'cache';
+    }
+
+    /**
+     * Convert the facade into a Mockery spy.
+     *
+     * @return \Mockery\MockInterface
+     */
+    public static function spy()
+    {
+        if (! static::isMock()) {
+            $class = static::getMockableClass();
+            $instance = static::getFacadeRoot();
+
+            if ($class && $instance) {
+                return tap(Mockery::spy($instance)->makePartial(), function ($spy) {
+                    static::swap($spy);
+                });
+            }
+
+            return tap($class ? Mockery::spy($class) : Mockery::spy(), function ($spy) {
+                static::swap($spy);
+            });
+        }
     }
 }

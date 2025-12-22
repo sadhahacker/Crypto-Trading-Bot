@@ -15,7 +15,7 @@ use Illuminate\Http\Client\Factory;
  * @method static \Closure failedConnection(string|null $message = null)
  * @method static \Illuminate\Http\Client\ResponseSequence sequence(array $responses = [])
  * @method static bool preventingStrayRequests()
- * @method static \Illuminate\Http\Client\Factory allowStrayRequests()
+ * @method static \Illuminate\Http\Client\Factory allowStrayRequests(array|null $only = null)
  * @method static \Illuminate\Http\Client\Factory record()
  * @method static void recordRequestResponsePair(\Illuminate\Http\Client\Request $request, \Illuminate\Http\Client\Response|null $response)
  * @method static void assertSent(callable|\Closure $callback)
@@ -65,20 +65,22 @@ use Illuminate\Http\Client\Factory;
  * @method static \Illuminate\Http\Client\PendingRequest withMiddleware(callable $middleware)
  * @method static \Illuminate\Http\Client\PendingRequest withRequestMiddleware(callable $middleware)
  * @method static \Illuminate\Http\Client\PendingRequest withResponseMiddleware(callable $middleware)
+ * @method static \Illuminate\Http\Client\PendingRequest withAttributes(array $attributes)
  * @method static \Illuminate\Http\Client\PendingRequest beforeSending(callable $callback)
  * @method static \Illuminate\Http\Client\PendingRequest throw(callable|null $callback = null)
  * @method static \Illuminate\Http\Client\PendingRequest throwIf(callable|bool $condition)
  * @method static \Illuminate\Http\Client\PendingRequest throwUnless(callable|bool $condition)
  * @method static \Illuminate\Http\Client\PendingRequest dump()
  * @method static \Illuminate\Http\Client\PendingRequest dd()
- * @method static \Illuminate\Http\Client\Response get(string $url, array|string|null $query = null)
- * @method static \Illuminate\Http\Client\Response head(string $url, array|string|null $query = null)
- * @method static \Illuminate\Http\Client\Response post(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
- * @method static \Illuminate\Http\Client\Response patch(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
- * @method static \Illuminate\Http\Client\Response put(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
- * @method static \Illuminate\Http\Client\Response delete(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
- * @method static array pool(callable $callback)
- * @method static \Illuminate\Http\Client\Response send(string $method, string $url, array $options = [])
+ * @method static void get(string $url, array|string|null $query = null)
+ * @method static void head(string $url, array|string|null $query = null)
+ * @method static void post(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static void patch(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static void put(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static void delete(string $url, array|\JsonSerializable|\Illuminate\Contracts\Support\Arrayable $data = [])
+ * @method static array pool(callable $callback, int|null $concurrency = null)
+ * @method static \Illuminate\Http\Client\Batch batch(callable $callback)
+ * @method static void send(string $method, string $url, array $options = [])
  * @method static \GuzzleHttp\Client buildClient()
  * @method static \GuzzleHttp\Client createClient(\GuzzleHttp\HandlerStack $handlerStack)
  * @method static \GuzzleHttp\HandlerStack buildHandlerStack()
@@ -89,6 +91,7 @@ use Illuminate\Http\Client\Factory;
  * @method static \GuzzleHttp\Psr7\RequestInterface runBeforeSendingCallbacks(\GuzzleHttp\Psr7\RequestInterface $request, array $options)
  * @method static array mergeOptions(array ...$options)
  * @method static \Illuminate\Http\Client\PendingRequest stub(callable $callback)
+ * @method static bool isAllowedRequestUrl(string $url)
  * @method static \Illuminate\Http\Client\PendingRequest async(bool $async = true)
  * @method static \GuzzleHttp\Promise\PromiseInterface|null getPromise()
  * @method static \Illuminate\Http\Client\PendingRequest truncateExceptionsAt(int $length)
@@ -116,7 +119,7 @@ class Http extends Facade
     /**
      * Register a stub callable that will intercept requests and be able to return stub responses.
      *
-     * @param  \Closure|array  $callback
+     * @param  \Closure|array|null  $callback
      * @return \Illuminate\Http\Client\Factory
      */
     public static function fake($callback = null)

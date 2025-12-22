@@ -222,28 +222,28 @@ class Collection extends BaseCollection implements QueueableCollection
             $relations = func_get_args();
         }
 
-        foreach ($relations as $key => $value) {
-            if (is_numeric($key)) {
-                $key = $value;
+        if ($this->isNotEmpty()) {
+            $query = $this->first()->newQueryWithoutRelationships()->with($relations);
+
+            foreach ($query->getEagerLoads() as $key => $value) {
+                $segments = explode('.', explode(':', $key)[0]);
+
+                if (str_contains($key, ':')) {
+                    $segments[count($segments) - 1] .= ':'.explode(':', $key)[1];
+                }
+
+                $path = [];
+
+                foreach ($segments as $segment) {
+                    $path[] = [$segment => $segment];
+                }
+
+                if (is_callable($value)) {
+                    $path[count($segments) - 1][array_last($segments)] = $value;
+                }
+
+                $this->loadMissingRelation($this, $path);
             }
-
-            $segments = explode('.', explode(':', $key)[0]);
-
-            if (str_contains($key, ':')) {
-                $segments[count($segments) - 1] .= ':'.explode(':', $key)[1];
-            }
-
-            $path = [];
-
-            foreach ($segments as $segment) {
-                $path[] = [$segment => $segment];
-            }
-
-            if (is_callable($value)) {
-                $path[count($segments) - 1][end($segments)] = $value;
-            }
-
-            $this->loadMissingRelation($this, $path);
         }
 
         return $this;
@@ -570,25 +570,14 @@ class Collection extends BaseCollection implements QueueableCollection
     }
 
     /**
-     * Make the given, typically hidden, attributes visible across the entire collection.
+     * Merge the given, typically visible, attributes hidden across the entire collection.
      *
      * @param  array<array-key, string>|string  $attributes
      * @return $this
      */
-    public function makeVisible($attributes)
+    public function mergeHidden($attributes)
     {
-        return $this->each->makeVisible($attributes);
-    }
-
-    /**
-     * Set the visible attributes across the entire collection.
-     *
-     * @param  array<int, string>  $visible
-     * @return $this
-     */
-    public function setVisible($visible)
-    {
-        return $this->each->setVisible($visible);
+        return $this->each->mergeHidden($attributes);
     }
 
     /**
@@ -603,6 +592,39 @@ class Collection extends BaseCollection implements QueueableCollection
     }
 
     /**
+     * Make the given, typically hidden, attributes visible across the entire collection.
+     *
+     * @param  array<array-key, string>|string  $attributes
+     * @return $this
+     */
+    public function makeVisible($attributes)
+    {
+        return $this->each->makeVisible($attributes);
+    }
+
+    /**
+     * Merge the given, typically hidden, attributes visible across the entire collection.
+     *
+     * @param  array<array-key, string>|string  $attributes
+     * @return $this
+     */
+    public function mergeVisible($attributes)
+    {
+        return $this->each->mergeVisible($attributes);
+    }
+
+    /**
+     * Set the visible attributes across the entire collection.
+     *
+     * @param  array<int, string>  $visible
+     * @return $this
+     */
+    public function setVisible($visible)
+    {
+        return $this->each->setVisible($visible);
+    }
+
+    /**
      * Append an attribute across the entire collection.
      *
      * @param  array<array-key, string>|string  $attributes
@@ -611,6 +633,27 @@ class Collection extends BaseCollection implements QueueableCollection
     public function append($attributes)
     {
         return $this->each->append($attributes);
+    }
+
+    /**
+     * Sets the appends on every element of the collection, overwriting the existing appends for each.
+     *
+     * @param  array<array-key, mixed>  $appends
+     * @return $this
+     */
+    public function setAppends(array $appends)
+    {
+        return $this->each->setAppends($appends);
+    }
+
+    /**
+     * Remove appended properties from every element in the collection.
+     *
+     * @return $this
+     */
+    public function withoutAppends()
+    {
+        return $this->setAppends([]);
     }
 
     /**

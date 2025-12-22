@@ -1,3 +1,4 @@
+using Google.Protobuf;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Globalization;
@@ -7,13 +8,15 @@ using StarkSharp.Rpc.Utils;
 using StarkSharp.StarkSharp.Base.StarkSharp.Hash;
 using System.IO.Compression;
 using System.Numerics;
-
 namespace ccxt;
+
 
 using dict = Dictionary<string, object>;
 
 public partial class Exchange
 {
+
+    protected readonly object idLock = new object();
 
     public Exchange(object userConfig2 = null)
     {
@@ -234,7 +237,7 @@ public partial class Exchange
             {
                 contentType = contentType == "" ? "application/json" : contentType;
 #if NET7_0_OR_GREATER
-            var contentTypeHeader = new MediaTypeWithQualityHeaderValue(contentType);
+                var contentTypeHeader = new MediaTypeWithQualityHeaderValue(contentType);
 #else
                 var contentTypeHeader = contentType;
 #endif
@@ -535,6 +538,11 @@ public partial class Exchange
     }
 
     public string totp(object a)
+    {
+        return "";
+    }
+
+    public string uuid5(object namesp, object name)
     {
         return "";
     }
@@ -1169,6 +1177,88 @@ public partial class Exchange
     public async Task<object> getZKTransferSignatureObj(object seed, object parameters)
     {
         throw new Exception("Apex currently does not support create order in C# language");
+    }
+
+    public async Task<object> loadDydxProtos()
+    {
+        throw new Exception("Dydx currently does not support create order / transfer asset in C# language");
+    }
+
+    public Int64 toDydxLong(object numStr)
+    {
+        throw new Exception("Dydx currently does not support create order / transfer asset in C# language");
+    }
+
+    public object retrieveDydxCredentials(object entropy)
+    {
+        throw new Exception("Dydx currently does not support create order / transfer asset in C# language");
+    }
+
+    public object encodeDydxTxForSimulation(
+        object message,
+        object memo,
+        object sequence,
+        object publicKey)
+    {
+        throw new Exception("Dydx currently does not support create order / transfer asset in C# language");
+    }
+
+    public object encodeDydxTxForSigning(
+        object message,
+        object memo,
+        object chainId,
+        object account,
+        object authenticators,
+        object fee)
+    {
+        throw new Exception("Dydx currently does not support create order / transfer asset in C# language");
+    }
+
+    public object encodeDydxTxRaw(object signDoc, object signature)
+    {
+        throw new Exception("Dydx currently does not support create order / transfer asset in C# language");
+    }
+
+    public bool isBinaryMessage(object msg)
+    {
+        if (msg is byte[] bytes)
+        {
+            return bytes.Length > 0;
+        }
+        if (msg is string str)
+        {
+            return str.StartsWith("0x") && str.Length > 2;
+        }
+        return false;
+    }
+
+    public object decodeProtoMsg(object data)
+    {
+        if (data is byte[] bytes)
+        {
+            try
+            {
+                var message = PushDataV3ApiWrapper.Parser.ParseFrom(bytes);
+                string json = Google.Protobuf.JsonFormatter.Default.Format(message);
+                var dict = this.parseJson(json);
+                return dict;
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Failed to decode protobuf message: " + e.Message);
+            }
+        }
+        throw new Exception("Data is not a valid byte array for protobuf decoding.");
+    }
+
+    public void lockId()
+    {
+        Monitor.Enter(this.idLock);
+    }
+
+    public void unlockId()
+    {
+        Monitor.Exit(this.idLock);
     }
 
 
