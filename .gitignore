@@ -44,7 +44,6 @@ logs/
 .cache/
 
 # Build artifacts
-/public/build/
 /public/mix-manifest.json
 /public/css/
 /public/js/

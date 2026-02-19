@@ -25,5 +25,5 @@ Route::resource('arbitrage', ArbitrageController::class);
 Route::get('signals/tester', [BacktestController::class, 'index']);
 Route::post('generate/backTestData', [BacktestController::class, 'generateBackTestData']);
 Route::get('backtest/files', [BacktestController::class, 'getGeneratedFiles']);
-Route::get('test', [BacktestController::class, 'testRunner']);
+Route::get('test', [\App\Http\Controllers\Strategies\EmaRsiVolumeStrategy::class, 'onBar']);
 
