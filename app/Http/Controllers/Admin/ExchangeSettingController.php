@@ -25,7 +25,10 @@ class ExchangeSettingController extends Controller
             'stoploss_from_coin' => 'numeric',
             'takeprofit_from_coin' => 'numeric',
             'default_type' => 'string',
+            'display_currency' => 'required|string|size:3',
         ]);
+
+        $data['display_currency'] = strtoupper($data['display_currency']);
 
         ExchangeSetting::updateOrCreate(['id' => 1], $data);
 

@@ -2,6 +2,18 @@
 import jQuery from 'jquery';
 window.$ = window.jQuery = jQuery;
 
+// Axios for API requests
+import axios from 'axios';
+window.axios = axios;
+const rawAppUrl = (import.meta.env.VITE_APP_URL || window.location.origin).trim();
+const resolvedAppUrl = new URL(rawAppUrl, window.location.origin);
+axios.defaults.baseURL = resolvedAppUrl.toString().replace(/\/+$/, '');
+axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
+const csrf = document.querySelector('meta[name=\"csrf-token\"]')?.getAttribute('content');
+if (csrf) {
+    axios.defaults.headers.common['X-CSRF-TOKEN'] = csrf;
+}
+
 // jQuery validation
 import 'jquery-validation';
 

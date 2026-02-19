@@ -29,9 +29,14 @@
                 <div class="row">
                     <div class="col-sm-6"><h3 class="mb-0">@yield('page_title')</h3></div>
                     <div class="col-sm-6">
-                        <ol class="breadcrumb float-sm-end">
-                            @yield('breadcrumb')
-                        </ol>
+                        <div class="d-flex justify-content-sm-end justify-content-start align-items-center gap-2 flex-wrap">
+                            @hasSection('page_actions')
+                                @yield('page_actions')
+                            @endif
+                            <ol class="breadcrumb mb-0">
+                                @yield('breadcrumb')
+                            </ol>
+                        </div>
                     </div>
                 </div>
             </div>

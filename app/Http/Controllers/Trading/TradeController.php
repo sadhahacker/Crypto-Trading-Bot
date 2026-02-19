@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Trading;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
+use App\Models\ExchangeSetting;
 use Exception;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Http;
 
 class TradeController extends Controller
 {
@@ -23,34 +25,252 @@ class TradeController extends Controller
     public function getAccountDetails()
     {
         try {
-            $balance = $this->getBalance();
-
-            // Extract total balances
-            $totalWalletBalance = Arr::get($balance, 'info.totalWalletBalance', '0.00000000');
-            $availableBalance = Arr::get($balance, 'info.availableBalance', '0.00000000');
-
-            // Extract assets with walletBalance and availableBalance only
-            $assets = collect(Arr::get($balance, 'info.assets', []))
-                ->map(function ($asset) {
-                    return [
-                        'asset' => $asset['asset'] ?? '',
-                        'walletBalance' => $asset['walletBalance'] ?? '0.00000000',
-                        'availableBalance' => $asset['availableBalance'] ?? '0.00000000',
-                    ];
-                })
-                ->values();
-
-            // Extract positions safely
-            $positions = Arr::get($balance, 'info.positions', []);
-
-            return successResponse('Account details fetched successfully', [
-                'totalWalletBalance' => $totalWalletBalance,
-                'availableBalance' => $availableBalance,
-                'assets' => $assets,
-                'positions' => $positions,
-            ]);
+            $snapshot = $this->buildDashboardSnapshot();
+            return successResponse('Account details fetched successfully', $snapshot);
         } catch (Exception $e) {
             return errorResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * Snapshot of balances, open positions and open orders for the dashboard
+     */
+    public function getDashboardSnapshot()
+    {
+        try {
+            $snapshot = $this->buildDashboardSnapshot();
+            return successResponse('Dashboard snapshot fetched successfully', $snapshot);
+        } catch (Exception $e) {
+            return errorResponse($e->getMessage());
+        }
+    }
+
+    /**
+     * Compose a lightweight snapshot for dashboard consumption.
+     */
+    private function buildDashboardSnapshot(): array
+    {
+        $balance = $this->getBalance();
+
+        // Normalize balances with sensible fallbacks
+        $totalWalletBalance = Arr::get($balance, 'info.totalWalletBalance')
+            ?? Arr::get($balance, 'total.USDT')
+            ?? Arr::get($balance, 'info.balance')
+            ?? 0;
+
+        $availableBalance = Arr::get($balance, 'info.availableBalance')
+            ?? Arr::get($balance, 'free.USDT')
+            ?? Arr::get($balance, 'info.cashBal')
+            ?? 0;
+
+        // Assets list (wallet + available)
+        $assets = collect(Arr::get($balance, 'info.assets', []))
+            ->map(function ($asset) {
+                return [
+                    'asset' => $asset['asset'] ?? '',
+                    'walletBalance' => $asset['walletBalance'] ?? 0,
+                    'availableBalance' => $asset['availableBalance'] ?? 0,
+                ];
+            })
+            ->filter(fn ($a) => $a['asset'] !== '')
+            ->values()
+            ->toArray();
+
+        $balanceBaseCurrency = $this->detectBalanceBaseCurrency($balance, $assets);
+        $displayCurrency = $this->getDisplayCurrency();
+        $conversionRate = $this->getCachedConversionRate($balanceBaseCurrency, $displayCurrency);
+        $totalWalletBalanceInDisplayCurrency = (float) $totalWalletBalance * $conversionRate;
+        $availableBalanceInDisplayCurrency = (float) $availableBalance * $conversionRate;
+
+        // Positions (filter out zero-sized) and trim to dashboard-friendly fields
+        $rawPositions = $this->getPositions() ?? [];
+        $openPositions = collect($rawPositions)
+            ->filter(function ($position) {
+                $size = $position['contracts'] ?? $position['size'] ?? $position['positionAmt'] ?? 0;
+                return abs((float) $size) > 0;
+            })
+            ->map(function ($position) {
+                return [
+                    'symbol' => $position['symbol'] ?? null,
+                    'side' => $position['side'] ?? null,
+                    'contracts' => $position['contracts'] ?? $position['size'] ?? $position['positionAmt'] ?? null,
+                    'entryPrice' => $position['entryPrice'] ?? null,
+                    'notional' => $position['notional'] ?? null,
+                    'unrealizedPnl' => $position['unrealizedPnl'] ?? null,
+                    'percentage' => $position['percentage'] ?? null,
+                    'leverage' => $position['leverage'] ?? null,
+                    'markPrice' => $position['markPrice'] ?? null,
+                    'liquidationPrice' => $position['liquidationPrice'] ?? null,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        // Open orders trimmed
+        $openOrders = $this->getOpenOrders() ?? [];
+        $orders = collect($openOrders)
+            ->map(function ($order) {
+                return [
+                    'id' => $order['id'] ?? null,
+                    'symbol' => $order['symbol'] ?? null,
+                    'type' => $order['type'] ?? null,
+                    'side' => $order['side'] ?? null,
+                    'price' => $order['price'] ?? null,
+                    'amount' => $order['amount'] ?? null,
+                    'filled' => $order['filled'] ?? null,
+                    'remaining' => $order['remaining'] ?? null,
+                    'status' => $order['status'] ?? null,
+                    'timestamp' => $order['timestamp'] ?? null,
+                ];
+            })
+            ->values()
+            ->toArray();
+
+        return [
+            'exchange' => [
+                'id' => $this->exchange->id,
+                'name' => $this->exchange->name,
+                'mode' => $this->exchange->options['defaultType'] ?? null,
+            ],
+            'balances' => [
+                'baseCurrency' => $balanceBaseCurrency,
+                'displayCurrency' => $displayCurrency,
+                'conversionRate' => $conversionRate,
+                'totalWalletBalance' => $totalWalletBalance,
+                'totalWalletBalanceInDisplayCurrency' => $totalWalletBalanceInDisplayCurrency,
+                'availableBalance' => $availableBalance,
+                'availableBalanceInDisplayCurrency' => $availableBalanceInDisplayCurrency,
+                'assets' => $assets,
+            ],
+            'counts' => [
+                'positions' => count($openPositions),
+                'openOrders' => count($orders),
+            ],
+            'positions' => $openPositions,
+            'orders' => $orders,
+        ];
+    }
+
+    private function getDisplayCurrency(): string
+    {
+        $currency = ExchangeSetting::query()
+            ->value('display_currency');
+
+        $normalized = strtoupper((string) $currency);
+        return $normalized !== '' ? $normalized : 'USD';
+    }
+
+    private function detectBalanceBaseCurrency(array $balance, array $assets): string
+    {
+        $candidates = [
+            Arr::get($balance, 'info.totalWalletBalanceAsset'),
+            Arr::get($balance, 'info.asset'),
+            Arr::get($balance, 'info.settleCoin'),
+            Arr::get($balance, 'info.quoteAsset'),
+        ];
+
+        foreach ($candidates as $candidate) {
+            $currency = strtoupper((string) $candidate);
+            if ($currency !== '') {
+                return $currency;
+            }
+        }
+
+        $total = Arr::get($balance, 'total', []);
+        if (is_array($total)) {
+            foreach (['USDT', 'USD', 'USDC', 'BUSD'] as $preferred) {
+                if (array_key_exists($preferred, $total)) {
+                    return $preferred;
+                }
+            }
+
+            $firstTotalCurrency = array_key_first($total);
+            if ($firstTotalCurrency) {
+                return strtoupper((string) $firstTotalCurrency);
+            }
+        }
+
+        $firstAsset = collect($assets)->first(function ($asset) {
+            return !empty($asset['asset']) && (float) ($asset['walletBalance'] ?? 0) > 0;
+        });
+
+        if (!empty($firstAsset['asset'])) {
+            return strtoupper((string) $firstAsset['asset']);
+        }
+
+        return 'USDT';
+    }
+
+    private function getCachedConversionRate(string $fromCurrency, string $toCurrency): float
+    {
+        $from = strtoupper(trim($fromCurrency));
+        $to = strtoupper(trim($toCurrency));
+
+        if ($from === '' || $to === '' || $from === $to) {
+            return 1.0;
+        }
+
+        $cacheKey = "fx_rate_{$from}_{$to}";
+
+        return Cache::remember($cacheKey, now()->addHour(), function () use ($from, $to) {
+            // Public API for crypto-to-fiat conversion (USDT -> INR, etc.)
+            if ($from === 'USDT') {
+                $coingeckoRate = $this->fetchUsdtRateFromCoingecko($to);
+                if ($coingeckoRate > 0) {
+                    return $coingeckoRate;
+                }
+            }
+
+            // Fallback for fiat rates using a public API.
+            $fiatRate = $this->fetchFiatRateFromFrankfurter($from === 'USDT' ? 'USD' : $from, $to);
+            if ($fiatRate > 0) {
+                return $fiatRate;
+            }
+
+            // Safe fallback if public APIs fail.
+            return 1.0;
+        });
+    }
+
+    private function fetchUsdtRateFromCoingecko(string $toCurrency): float
+    {
+        try {
+            $response = Http::timeout(8)
+                ->acceptJson()
+                ->get('https://api.coingecko.com/api/v3/simple/price', [
+                    'ids' => 'tether',
+                    'vs_currencies' => strtolower($toCurrency),
+                ]);
+
+            if (! $response->successful()) {
+                return 0;
+            }
+
+            $rate = (float) Arr::get($response->json(), 'tether.' . strtolower($toCurrency), 0);
+            return $rate > 0 ? $rate : 0;
+        } catch (\Throwable $e) {
+            return 0;
+        }
+    }
+
+    private function fetchFiatRateFromFrankfurter(string $fromCurrency, string $toCurrency): float
+    {
+        try {
+            $response = Http::timeout(8)
+                ->acceptJson()
+                ->get('https://api.frankfurter.app/latest', [
+                    'from' => strtoupper($fromCurrency),
+                    'to' => strtoupper($toCurrency),
+                ]);
+
+            if (! $response->successful()) {
+                return 0;
+            }
+
+            $rate = (float) Arr::get($response->json(), 'rates.' . strtoupper($toCurrency), 0);
+            return $rate > 0 ? $rate : 0;
+        } catch (\Throwable $e) {
+            return 0;
         }
     }
 

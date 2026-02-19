@@ -77,6 +77,10 @@ return [
     */
     'options' => [
         'defaultType' => env('EXCHANGE_DEFAULT_TYPE', 'future'),
+        'warnOnFetchOpenOrdersWithoutSymbol' => filter_var(
+            env('EXCHANGE_WARN_FETCH_OPEN_ORDERS_WITHOUT_SYMBOL', false),
+            FILTER_VALIDATE_BOOLEAN
+        ),
     ],
 
 ];

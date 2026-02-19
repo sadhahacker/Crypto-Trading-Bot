@@ -14,6 +14,7 @@ Route::get('/user', function (Request $request) {
 
 // Account details
 Route::get('/account/details', [TradeController::class, 'getAccountDetails']);
+Route::get('/dashboard/snapshot', [TradeController::class, 'getDashboardSnapshot']);
 
 // Bots management
 Route::get('/bots', [BotsController::class, 'index']);

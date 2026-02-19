@@ -81,14 +81,28 @@
 
 
                     <div class="col-md-3 col-sm-6">
-                        <div class="setting-item p-3 border rounded-3 h-100" data-url="{{ url('signals/tester') }}">
+                        <div class="setting-item p-3 border rounded-3 h-100" data-url="{{ url('backtest') }}">
                             <div class="d-flex align-items-start">
-                                <div class="icon-wrapper bg-warning bg-opacity-10 text-warning rounded-circle p-2 me-3">
-                                    <i class="bi bi-gear fs-5"></i>
+                                <div class="icon-wrapper bg-info bg-opacity-10 text-info rounded-circle p-2 me-3">
+                                    <i class="bi bi-activity fs-5"></i>
                                 </div>
                                 <div>
-                                    <h6 class="mb-1 fw-semibold">Signal Tester</h6>
-                                    <small class="text-muted">Configure exchange and its api</small>
+                                    <h6 class="mb-1 fw-semibold">Backtest</h6>
+                                    <small class="text-muted">Select strategy and run backtests</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3 col-sm-6">
+                        <div class="setting-item p-3 border rounded-3 h-100" data-url="{{ url('historical-data') }}">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-wrapper bg-success bg-opacity-10 text-success rounded-circle p-2 me-3">
+                                    <i class="bi bi-clock-history fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">Historical Data</h6>
+                                    <small class="text-muted">View downloaded historical files</small>
                                 </div>
                             </div>
                         </div>

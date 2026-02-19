@@ -41,6 +41,20 @@
                         </div>
 
                         <div class="col-md-6">
+                            <label for="display_currency" class="form-label">Display Currency</label>
+                            @php($displayCurrency = strtoupper($settings->display_currency ?? 'USD'))
+                            <select name="display_currency" id="display_currency" class="form-select">
+                                <option value="USD" {{ $displayCurrency === 'USD' ? 'selected' : '' }}>USD</option>
+                                <option value="INR" {{ $displayCurrency === 'INR' ? 'selected' : '' }}>INR</option>
+                                <option value="EUR" {{ $displayCurrency === 'EUR' ? 'selected' : '' }}>EUR</option>
+                                <option value="GBP" {{ $displayCurrency === 'GBP' ? 'selected' : '' }}>GBP</option>
+                                <option value="AED" {{ $displayCurrency === 'AED' ? 'selected' : '' }}>AED</option>
+                                <option value="JPY" {{ $displayCurrency === 'JPY' ? 'selected' : '' }}>JPY</option>
+                            </select>
+                            <div class="invalid-feedback" id="display_currency_error"></div>
+                        </div>
+
+                        <div class="col-md-6">
                             <label for="api_key" class="form-label">API Key</label>
                             <input type="text" name="api_key" id="api_key"
                                    class="form-control" value="{{ $settings->api_key ?? '' }}">
@@ -118,6 +132,9 @@
                         required: true
                     },
                     default_type: {
+                        required: true
+                    },
+                    display_currency: {
                         required: true
                     },
                     api_key: {
@@ -223,4 +240,3 @@
         });
     </script>
 @endpush
-

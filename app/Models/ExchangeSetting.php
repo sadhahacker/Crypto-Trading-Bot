@@ -15,6 +15,7 @@ class ExchangeSetting extends Model
         'stoploss_from_coin',
         'takeprofit_from_coin',
         'default_type',
+        'display_currency',
         'id',
     ];
 

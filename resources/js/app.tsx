@@ -7,9 +7,10 @@ import BotListPage from "@/pages/BotListPage.tsx";
 import SignalsPage from "@/pages/SignalsPage.tsx";
 import ExchangeSettingsPage from "@/pages/Settings/ExchangeSettingsPage.tsx";
 
-// @ts-ignore
-const baseUrl = new URL(import.meta.env.VITE_APP_URL).pathname;
-axios.defaults.baseURL = baseUrl
+const rawAppUrl = (import.meta.env.VITE_APP_URL || window.location.origin).trim()
+const resolvedAppUrl = new URL(rawAppUrl, window.location.origin)
+const baseUrl = resolvedAppUrl.pathname.replace(/\/+$/, "") || "/"
+axios.defaults.baseURL = resolvedAppUrl.toString().replace(/\/+$/, "")
 
 function App() {
     return (

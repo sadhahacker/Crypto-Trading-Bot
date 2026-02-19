@@ -28,6 +28,10 @@ class AccountSetupController extends Controller
             'enableRateLimit' => true,
             'options' => [
                 'defaultType' => $settings->default_type ?? config('trading.options.defaultType', 'future'),
+                'warnOnFetchOpenOrdersWithoutSymbol' => config(
+                    'trading.options.warnOnFetchOpenOrdersWithoutSymbol',
+                    false
+                ),
             ],
         ]);
 
