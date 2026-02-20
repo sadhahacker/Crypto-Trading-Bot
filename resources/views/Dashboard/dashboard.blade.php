@@ -214,12 +214,15 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const apiUrl = @json(url('/api/dashboard/snapshot'));
+            const wsUrl = @json(config('trading.websocket.url')) || `ws://${window.location.hostname}:${@json(config('trading.websocket.port'))}`;
             const autoRefresh = document.getElementById('auto-refresh');
             const liveFireIcon = document.getElementById('live-fire-icon');
             const liveStatusText = document.getElementById('live-status-text');
             const lastUpdated = document.getElementById('last-updated');
 
             let timer = null;
+            let ws = null;
+            let wsConnected = false;
 
             function formatUpdateTime(date = new Date()) {
                 return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
@@ -348,25 +351,81 @@
                 }
             }
 
-            function startAutoRefresh() {
+            function closeWebsocket() {
+                if (ws) {
+                    ws.close();
+                    ws = null;
+                }
+                wsConnected = false;
+            }
+
+            function stopAll() {
+                closeWebsocket();
                 if (timer) clearInterval(timer);
+                timer = null;
+            }
+
+            function startWebsocket() {
+                try {
+                    ws = new WebSocket(wsUrl);
+                } catch (e) {
+                    console.error('WS init failed', e);
+                    startAutoRefresh();
+                    return;
+                }
+
+                ws.addEventListener('open', () => {
+                    wsConnected = true;
+                    // ask for immediate snapshot
+                    ws.send(JSON.stringify({ type: 'snapshot' }));
+                });
+
+                ws.addEventListener('message', (event) => {
+                    try {
+                        const payload = JSON.parse(event.data);
+                        if (payload?.type === 'snapshot' && payload.data) {
+                            renderSnapshot(payload.data);
+                            lastUpdated.textContent = `Live · ${formatUpdateTime()}`;
+                        }
+                    } catch (e) {
+                        console.error('WS parse error', e);
+                    }
+                });
+
+                ws.addEventListener('error', () => {
+                    wsConnected = false;
+                    startAutoRefresh();
+                });
+
+                ws.addEventListener('close', () => {
+                    wsConnected = false;
+                    startAutoRefresh();
+                });
+            }
+
+            function startAutoRefresh() {
+                stopAll();
                 timer = setInterval(fetchSnapshot, 5000);
             }
 
             autoRefresh.addEventListener('change', (e) => {
                 if (e.target.checked) {
-                    startAutoRefresh();
+                    // Prefer websocket; fall back to polling if it fails
+                    stopAll();
+                    startWebsocket();
+                    // kick a fetch to render quickly in case ws is slow to open
                     fetchSnapshot();
-                } else if (timer) {
-                    clearInterval(timer);
+                } else {
+                    stopAll();
+                    lastUpdated.textContent = `Sleep · ${formatUpdateTime()}`;
                 }
                 syncLiveIndicator();
             });
 
             // initial load
             syncLiveIndicator();
+            startWebsocket();
             fetchSnapshot();
-            startAutoRefresh();
         });
     </script>
 @endpush

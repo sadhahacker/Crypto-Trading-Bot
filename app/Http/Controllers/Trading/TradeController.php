@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Trading;
 
 use App\Http\Controllers\Controller;
 use App\Models\ExchangeSetting;
+use App\Jobs\RefreshDashboardSnapshot;
 use Exception;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Cache;
@@ -25,7 +26,7 @@ class TradeController extends Controller
     public function getAccountDetails()
     {
         try {
-            $snapshot = $this->buildDashboardSnapshot();
+            $snapshot = $this->getCachedDashboardSnapshot();
             return successResponse('Account details fetched successfully', $snapshot);
         } catch (Exception $e) {
             return errorResponse($e->getMessage());
@@ -38,7 +39,7 @@ class TradeController extends Controller
     public function getDashboardSnapshot()
     {
         try {
-            $snapshot = $this->buildDashboardSnapshot();
+            $snapshot = $this->getCachedDashboardSnapshot();
             return successResponse('Dashboard snapshot fetched successfully', $snapshot);
         } catch (Exception $e) {
             return errorResponse($e->getMessage());
@@ -46,9 +47,39 @@ class TradeController extends Controller
     }
 
     /**
+     * Cached wrapper for dashboard snapshot to speed up repeated calls.
+     */
+    public function getCachedDashboardSnapshot(bool $forceRefresh = false): array
+    {
+
+        if ($forceRefresh) {
+            Cache::forget('dashboard_snapshot');
+        }
+
+        $result = Cache::remember('dashboard_snapshot', 3600, function () {
+            return $this->buildDashboardSnapshot();
+        });
+
+        RefreshDashboardSnapshot::dispatch();
+
+        return $result;
+    }
+
+    /**
+     * Rebuilds and stores snapshot; callable from job.
+     */
+    public function refreshSnapshotCache(): void
+    {
+       Cache::forget('dashboard_snapshot');
+       Cache::remember('dashboard_snapshot', 3600, function () {
+           return $this->buildDashboardSnapshot();
+       });
+    }
+
+    /**
      * Compose a lightweight snapshot for dashboard consumption.
      */
-    private function buildDashboardSnapshot(): array
+    public function buildDashboardSnapshot(): array
     {
         $balance = $this->getBalance();
 

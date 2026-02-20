@@ -79,6 +79,20 @@
                         </div>
                     </div>
 
+                    <div class="col-md-3 col-sm-6">
+                        <div class="setting-item p-3 border rounded-3 h-100" data-url="{{ url(config('horizon.path')) }}">
+                            <div class="d-flex align-items-start">
+                                <div class="icon-wrapper bg-primary bg-opacity-10 text-primary rounded-circle p-2 me-3">
+                                    <i class="bi bi-speedometer2 fs-5"></i>
+                                </div>
+                                <div>
+                                    <h6 class="mb-1 fw-semibold">Queue Monitor</h6>
+                                    <small class="text-muted">Open Laravel Horizon dashboard</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
                     <div class="col-md-3 col-sm-6">
                         <div class="setting-item p-3 border rounded-3 h-100" data-url="{{ url('backtest') }}">
